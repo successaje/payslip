@@ -11,7 +11,8 @@
     "typecheck": "tsc --noEmit",
     "db:push": "dotenv -e .env.local -- drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "db:generate": "drizzle-kit generate"
+    "db:generate": "drizzle-kit generate",
+    "postinstall": "node scripts/copy-wasm.mjs"
   },
   "dependencies": {
     "@libsql/client": "^0.18.0",
