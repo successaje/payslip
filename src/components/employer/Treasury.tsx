@@ -8,7 +8,7 @@ import { useApp } from "@/components/app/AppContext";
 import { Amount, Badge, Button, Card, CardBody, CardHeader, Input, PageHeader, Skeleton, useToast } from "@/components/ui";
 import { useResource } from "@/hooks/useResource";
 import { readHolderState } from "@/lib/solana/accounts";
-import { applyPending, decryptAvailableBalance, depositToConfidential } from "@/lib/solana/confidential";
+import { applyPending, configureConfidentialAccount, decryptAvailableBalance, depositToConfidential } from "@/lib/solana/confidential";
 import { sendInstructions } from "@/lib/solana/send";
 import { CLUSTER } from "@/lib/solana/config";
 import { parseUsd } from "@/lib/domain/money";
@@ -24,7 +24,7 @@ export function Treasury() {
   const { company, account, signer, client } = useApp();
   const { toast } = useToast();
   const [privateBalance, setPrivateBalance] = useState<bigint | null>(null);
-  const [busy, setBusy] = useState<"mint" | "deposit" | "reveal" | null>(null);
+  const [busy, setBusy] = useState<"mint" | "deposit" | "reveal" | "configure" | null>(null);
   const [amount, setAmount] = useState("");
   const mint = company?.mint ? toAddress(company.mint) : null;
 
@@ -36,6 +36,20 @@ export function Treasury() {
   const refresh = holderResource.reload;
 
   if (!company || !mint) return null;
+
+  const configure = async () => {
+    setBusy("configure");
+    try {
+      await configureConfidentialAccount(client, signer, mint);
+      toast({ tone: "success", title: "Treasury ready", description: "You can now hold a private balance." });
+      await refresh();
+    } catch (e) {
+      const d = describeError(e);
+      if (!d.cancelled) toast({ tone: "error", title: "Could not prepare treasury", description: d.message });
+    } finally {
+      setBusy(null);
+    }
+  };
 
   const reveal = async () => {
     setBusy("reveal");
@@ -101,6 +115,17 @@ export function Treasury() {
           </Button>
         }
       />
+
+      {holder && !holder.configured && (
+        <Card className="mb-4">
+          <CardHeader title="Prepare your treasury account" description="One signature and one transaction. This registers a private balance for your wallet on the payroll token." />
+          <CardBody>
+            <Button loading={busy === "configure"} loadingLabel="Preparing…" onClick={configure}>
+              Prepare treasury
+            </Button>
+          </CardBody>
+        </Card>
+      )}
 
       <div className="grid gap-4 md:grid-cols-2">
         <Card>

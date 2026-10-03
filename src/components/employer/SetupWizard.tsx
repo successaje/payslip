@@ -10,7 +10,7 @@ import { Wordmark } from "@/components/brand/Wordmark";
 import { ConnectButton } from "@/components/wallet/ConnectButton";
 import { Button, Card, CardBody, Input, Stepper, useToast, type Step } from "@/components/ui";
 import { api } from "@/lib/api/client";
-import { auditorPublicKey } from "@/lib/solana/confidential";
+import { auditorPublicKey, configureConfidentialAccount } from "@/lib/solana/confidential";
 import { createCompanyMint } from "@/lib/solana/mint";
 import { describeError } from "@/lib/errors";
 import { explorerUrl } from "@/lib/solana/config";
@@ -54,6 +54,7 @@ export function SetupWizard() {
       { key: "company", label: "Save company", state: "active" },
       { key: "auditor", label: "Derive auditor key", state: "pending", detail: auditorMode === "self" ? "One signature from your wallet" : undefined },
       { key: "mint", label: "Create payroll token", state: "pending", detail: "One transaction. Pays a small rent deposit." },
+      { key: "treasury", label: "Prepare your treasury account", state: "pending", detail: "One transaction so you can hold a private balance." },
       { key: "record", label: "Record on Payslip", state: "pending" },
     ]);
 
@@ -91,6 +92,10 @@ export function SetupWizard() {
         },
       );
       setStep("mint", "done", shortAddress(mint, 6));
+
+      setStep("treasury", "active", "Waiting for your signature…");
+      await configureConfidentialAccount(client, signer, toAddress(mint));
+      setStep("treasury", "done");
 
       setStep("record", "active");
       await api.updateCompany(company.id, { mint, auditorElgamalPubkey, mintSignature: signature });
@@ -270,7 +275,7 @@ export function SetupWizard() {
             <motion.div key="create" {...slide}>
               <h1 className="text-[24px] font-semibold tracking-[-0.01em] text-ink">Creating {name}</h1>
               <p className="mt-2 text-[14px] text-ink-3 text-pretty">
-                Your wallet will ask for one signature and one transaction. Keep this tab open.
+                Your wallet will ask for one signature and two transactions. Keep this tab open.
               </p>
               <Card className="mt-6">
                 <CardBody className="pt-5">
