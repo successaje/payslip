@@ -1,4 +1,4 @@
-import { generateKeyPairSigner, type Address, type Signature, type TransactionSigner } from "@solana/kit";
+import { generateKeyPairSigner, type Address, type KeyPairSigner, type Signature, type TransactionSigner } from "@solana/kit";
 import {
   TOKEN_2022_PROGRAM_ADDRESS,
   extension,
@@ -16,8 +16,10 @@ export interface CreateCompanyMintInput {
   client: SolanaClient;
   /** Pays rent and fees, and becomes the confidential-transfer config authority. */
   payer: TransactionSigner;
-  /** Who may mint. The vault PDA in production; the employer wallet until the vault program is deployed. */
+  /** Who may mint. The vault PDA when the vault program is configured; the employer wallet otherwise. */
   mintAuthority: Address;
+  /** Pre-generated mint keypair, so the caller can derive PDAs from its address first. */
+  mint?: KeyPairSigner;
   /** Auditor's ElGamal public key, base58. */
   auditorElgamalPubkey: Address;
 }
@@ -33,10 +35,10 @@ export interface CreateCompanyMintResult {
  * Accounts are auto-approved so employees do not need a second approval step.
  */
 export async function createCompanyMint(
-  { client, payer, mintAuthority, auditorElgamalPubkey }: CreateCompanyMintInput,
+  { client, payer, mintAuthority, auditorElgamalPubkey, mint: providedMint }: CreateCompanyMintInput,
   options: SendOptions = {},
 ): Promise<CreateCompanyMintResult> {
-  const mint = await generateKeyPairSigner();
+  const mint = providedMint ?? (await generateKeyPairSigner());
   const space = getMintSize([
     extension("ConfidentialTransferMint", {
       authority: payer.address,
