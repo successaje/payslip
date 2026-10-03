@@ -59,7 +59,7 @@ npm run db:push
 npm run dev
 ```
 
-Open http://localhost:3000.
+Open http://localhost:3200.
 
 ### Environment variables
 

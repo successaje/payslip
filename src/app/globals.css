@@ -1,26 +1,234 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/*
+  Design tokens.
+
+  Payslip is a payroll product: calm, precise, document-like. Light is the
+  default (paper), dark is a full redefinition rather than a partial override.
+  Colours are expressed as semantic roles so components never reach for a hex.
+*/
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+
+  --paper: #f7f6f2;
+  --paper-raised: #ffffff;
+  --paper-sunken: #efede7;
+  --paper-inset: #e9e6df;
+
+  --ink: #171614;
+  --ink-2: #4d4a44;
+  --ink-3: #85817a;
+  --ink-4: #b6b2aa;
+
+  --line: #e2dfd7;
+  --line-strong: #cbc7bd;
+  --line-focus: #171614;
+
+  --green: #0f6b4f;
+  --green-strong: #0a5a42;
+  --green-soft: #e3f1ea;
+  --green-ink: #0a4a37;
+
+  --amber: #9a6400;
+  --amber-soft: #fbf0d6;
+  --red: #b3261e;
+  --red-soft: #fbe6e4;
+  --blue: #2b4fd8;
+  --blue-soft: #e5eafb;
+
+  --shadow-sm: 0 1px 2px rgba(23, 22, 20, 0.06), 0 0 0 1px rgba(23, 22, 20, 0.04);
+  --shadow-md: 0 4px 16px rgba(23, 22, 20, 0.08), 0 0 0 1px rgba(23, 22, 20, 0.05);
+  --shadow-lg: 0 24px 64px rgba(23, 22, 20, 0.16), 0 0 0 1px rgba(23, 22, 20, 0.06);
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+  --dur-slow: 360ms;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --paper: #121211;
+  --paper-raised: #1a1917;
+  --paper-sunken: #0d0d0c;
+  --paper-inset: #232220;
+
+  --ink: #f1efe9;
+  --ink-2: #b9b5ac;
+  --ink-3: #807c74;
+  --ink-4: #514e48;
+
+  --line: #2a2926;
+  --line-strong: #3b3936;
+  --line-focus: #f1efe9;
+
+  --green: #4cc39a;
+  --green-strong: #6ad3ad;
+  --green-soft: #15302a;
+  --green-ink: #a9e6cf;
+
+  --amber: #e2b35c;
+  --amber-soft: #2e2512;
+  --red: #ff7b72;
+  --red-soft: #35191a;
+  --blue: #8aa2ff;
+  --blue-soft: #1a2140;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.05);
+  --shadow-lg: 0 24px 64px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-paper: var(--paper);
+  --color-paper-raised: var(--paper-raised);
+  --color-paper-sunken: var(--paper-sunken);
+  --color-paper-inset: var(--paper-inset);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-ink-3: var(--ink-3);
+  --color-ink-4: var(--ink-4);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-green: var(--green);
+  --color-green-strong: var(--green-strong);
+  --color-green-soft: var(--green-soft);
+  --color-green-ink: var(--green-ink);
+  --color-amber: var(--amber);
+  --color-amber-soft: var(--amber-soft);
+  --color-red: var(--red);
+  --color-red-soft: var(--red-soft);
+  --color-blue: var(--blue);
+  --color-blue-soft: var(--blue-soft);
+
+  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-serif), ui-serif, Georgia, serif;
+  --font-mono: var(--font-mono), ui-monospace, "SF Mono", Menlo, monospace;
+
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+
+  --ease-out: var(--ease-out);
+  --ease-in-out: var(--ease-in-out);
+
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    border-color: var(--line);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    font-feature-settings: "ss01", "cv11";
+  }
+
+  ::selection {
+    background: var(--green-soft);
+    color: var(--green-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--line-focus);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  button,
+  [role="button"] {
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  /* Tabular numerals for every amount, hash and date column. */
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-pretty {
+    text-wrap: pretty;
+  }
+
+  /* Hairline rule used between list rows. */
+  .hairline {
+    box-shadow: inset 0 -1px 0 var(--line);
+  }
+}
+
+/* Keyframes for the few global animations the primitives rely on. */
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
