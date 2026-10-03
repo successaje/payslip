@@ -55,7 +55,7 @@ export function Audit({ companyId }: { companyId: string }) {
         }
         setProgress(i + 1);
       }
-      toast({ tone: "success", title: "Audit complete", description: `${rows.length} transfers decrypted from chain.` });
+      toast({ tone: "success", title: "Audit complete", description: `${rows.length} ${rows.length === 1 ? "transfer" : "transfers"} decrypted from chain.` });
     } catch (e) {
       const d = describeError(e);
       if (!d.cancelled) toast({ tone: "error", title: "Audit stopped", description: d.message });
@@ -127,7 +127,7 @@ export function Audit({ companyId }: { companyId: string }) {
             <CardHeader title="Verified on-chain" />
             <CardBody>
               <Amount value={totals.onChain} size="lg" />
-              <p className="mt-1 text-[12.5px] text-ink-3">{totals.verified} of {rows.length} transfers</p>
+              <p className="mt-1 text-[12.5px] text-ink-3">{totals.verified} of {rows.length} {rows.length === 1 ? "transfer" : "transfers"}</p>
             </CardBody>
           </Card>
           <Card>
