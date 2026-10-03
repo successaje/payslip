@@ -10,7 +10,8 @@ import { useResource } from "@/hooks/useResource";
 import { readHolderState } from "@/lib/solana/accounts";
 import { applyPending, configureConfidentialAccount, decryptAvailableBalance, depositToConfidential } from "@/lib/solana/confidential";
 import { sendInstructions } from "@/lib/solana/send";
-import { CLUSTER } from "@/lib/solana/config";
+import { CLUSTER, VAULT_PROGRAM_ID } from "@/lib/solana/config";
+import { VaultCard } from "./VaultCard";
 import { parseUsd } from "@/lib/domain/money";
 import { describeError } from "@/lib/errors";
 
@@ -168,11 +169,17 @@ export function Treasury() {
         </Card>
       </div>
 
-      {CLUSTER === "devnet" && (
+      {VAULT_PROGRAM_ID && holder?.configured && (
+        <div className="mt-4">
+          <VaultCard client={client} signer={signer} mint={mint} publicPayroll={holder.publicAmount} onChanged={refresh} mode="employer" />
+        </div>
+      )}
+
+      {CLUSTER === "devnet" && !VAULT_PROGRAM_ID && (
         <Card className="mt-4 border-dashed">
           <CardHeader
             title="Add test funds"
-            description="Devnet only. Your wallet is the mint authority on devnet, so it can create test payroll dollars. On mainnet this is replaced by wrapping USDC."
+            description="Devnet only, and only while no vault program is configured. Your wallet is the mint authority, so it can create test payroll dollars."
             action={<Badge tone="amber">Devnet</Badge>}
           />
           <CardBody>

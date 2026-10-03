@@ -45,3 +45,6 @@ next-env.d.ts
 !.env.example
 .claude/
 public/zk/
+program/target/
+program/node_modules/
+program/.anchor/

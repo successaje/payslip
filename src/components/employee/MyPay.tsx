@@ -10,7 +10,8 @@ import { useResource } from "@/hooks/useResource";
 import { api } from "@/lib/api/client";
 import { readHolderState } from "@/lib/solana/accounts";
 import { applyPending, decryptAvailableBalance, withdrawToPublic } from "@/lib/solana/confidential";
-import { explorerUrl } from "@/lib/solana/config";
+import { explorerUrl, VAULT_PROGRAM_ID } from "@/lib/solana/config";
+import { VaultCard } from "@/components/employer/VaultCard";
 import { parseUsd } from "@/lib/domain/money";
 import { describeError } from "@/lib/errors";
 import { formatDate, shortAddress } from "@/lib/format";
@@ -151,6 +152,12 @@ export function MyPay({ full = false }: { full?: boolean }) {
               <p className="mt-2 font-mono text-[12px] text-ink-3">{shortAddress(account.address, 6)}</p>
             </CardBody>
           </Card>
+        </div>
+      )}
+
+      {!full && VAULT_PROGRAM_ID && holder.data && holder.data.publicAmount > 0n && (
+        <div className="mt-4">
+          <VaultCard client={client} signer={signer} mint={mint} publicPayroll={holder.data.publicAmount} onChanged={holder.reload} mode="employee" />
         </div>
       )}
 

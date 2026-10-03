@@ -12,6 +12,10 @@ import { Button, Card, CardBody, Input, Stepper, useToast, type Step } from "@/c
 import { api } from "@/lib/api/client";
 import { auditorPublicKey, configureConfidentialAccount } from "@/lib/solana/confidential";
 import { createCompanyMint } from "@/lib/solana/mint";
+import { findVaultAuthority, getInitVaultInstruction } from "@/lib/solana/vault";
+import { sendInstructions } from "@/lib/solana/send";
+import { VAULT_PROGRAM_ID } from "@/lib/solana/config";
+import { generateKeyPairSigner } from "@solana/kit";
 import { describeError } from "@/lib/errors";
 import { explorerUrl } from "@/lib/solana/config";
 import { shortAddress } from "@/lib/format";
@@ -54,6 +58,9 @@ export function SetupWizard() {
       { key: "company", label: "Save company", state: "active" },
       { key: "auditor", label: "Derive auditor key", state: "pending", detail: auditorMode === "self" ? "One signature from your wallet" : undefined },
       { key: "mint", label: "Create payroll token", state: "pending", detail: "One transaction. Pays a small rent deposit." },
+      ...(VAULT_PROGRAM_ID
+        ? [{ key: "vault", label: "Open the USDC vault", state: "pending" as const, detail: "One transaction. Backs the token 1:1 with USDC." }]
+        : []),
       { key: "treasury", label: "Prepare your treasury account", state: "pending", detail: "One transaction so you can hold a private balance." },
       { key: "record", label: "Record on Payslip", state: "pending" },
     ]);
@@ -75,11 +82,15 @@ export function SetupWizard() {
       setStep("auditor", "done", shortAddress(auditorElgamalPubkey, 6));
 
       setStep("mint", "active", "Preparing…");
+      // With the vault program deployed, the vault PDA is the only mint authority.
+      const mintKeypair = await generateKeyPairSigner();
+      const mintAuthority = VAULT_PROGRAM_ID ? await findVaultAuthority(mintKeypair.address) : toAddress(account.address);
       const { mint, signature } = await createCompanyMint(
         {
           client,
           payer: signer,
-          mintAuthority: toAddress(account.address),
+          mint: mintKeypair,
+          mintAuthority,
           auditorElgamalPubkey: toAddress(auditorElgamalPubkey),
         },
         {
@@ -92,6 +103,12 @@ export function SetupWizard() {
         },
       );
       setStep("mint", "done", shortAddress(mint, 6));
+
+      if (VAULT_PROGRAM_ID) {
+        setStep("vault", "active", "Waiting for your signature…");
+        await sendInstructions(client, signer, [await getInitVaultInstruction(signer, toAddress(mint))]);
+        setStep("vault", "done");
+      }
 
       setStep("treasury", "active", "Waiting for your signature…");
       await configureConfidentialAccount(client, signer, toAddress(mint));
