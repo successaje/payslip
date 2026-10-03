@@ -30,7 +30,7 @@ export function Audit({ companyId }: { companyId: string }) {
   const [progress, setProgress] = useState(0);
 
   const isAuditor = data.data?.company.auditorAddress === account.address;
-  const rows = data.data?.rows ?? [];
+  const rows = useMemo(() => data.data?.rows ?? [], [data.data]);
 
   const totals = useMemo(() => {
     const ok = rows.filter((r) => "amount" in (decrypted[r.paymentId] ?? {}));
