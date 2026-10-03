@@ -45,9 +45,23 @@ export async function requireOwnedCompany(id: string) {
   return { session, company };
 }
 
+/** Loads a company the signed-in address owns or audits, or 404. */
+export async function requireCompanyAccess(id: string) {
+  const session = await requireSession();
+  const company = await db.query.companies.findFirst({ where: eq(companies.id, id) });
+  if (!company || (company.ownerAddress !== session.address && company.auditorAddress !== session.address)) {
+    throw new ApiError(404, "Company not found");
+  }
+  return { session, company, role: company.ownerAddress === session.address ? ("owner" as const) : ("auditor" as const) };
+}
+
 /** Everything the app needs to route a signed-in wallet. */
 export async function describeMe(address: string) {
   const owned = await db.query.companies.findMany({ where: eq(companies.ownerAddress, address) });
+  const audits = await db
+    .select({ id: companies.id, name: companies.name, mint: companies.mint, ownerAddress: companies.ownerAddress })
+    .from(companies)
+    .where(eq(companies.auditorAddress, address));
   const memberships = await db
     .select({
       employee: employees,
@@ -56,7 +70,7 @@ export async function describeMe(address: string) {
     .from(employees)
     .innerJoin(companies, eq(employees.companyId, companies.id))
     .where(and(eq(employees.walletAddress, address), eq(employees.status, "active")));
-  return { address, companies: owned, memberships };
+  return { address, companies: owned, memberships, audits };
 }
 
 export type Me = Awaited<ReturnType<typeof describeMe>>;

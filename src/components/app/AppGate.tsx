@@ -31,6 +31,8 @@ const employeeNav: NavItem[] = [
   { href: "/app/me/payslips", label: "Payslips", icon: <FileText size={17} /> },
 ];
 
+const auditorNav: NavItem[] = [{ href: "/app/audit", label: "Audit", icon: <ShieldCheck size={17} /> }];
+
 function Centered({ children }: { children: ReactNode }) {
   return <div className="flex min-h-full flex-1 flex-col items-center justify-center px-4 py-16">{children}</div>;
 }
@@ -84,16 +86,19 @@ function Authenticated({ account, signOut, children }: { account: UiWalletAccoun
   const company = me?.companies[0] ?? null;
   const isEmployer = Boolean(company);
   const isEmployee = (me?.memberships.length ?? 0) > 0;
-  const needsSetup = me !== null && !isEmployer && !isEmployee;
+  const isAuditor = (me?.audits.length ?? 0) > 0;
+  const needsSetup = me !== null && !isEmployer && !isEmployee && !isAuditor;
   const onSetup = pathname.startsWith("/app/setup");
   const onEmployeeArea = pathname.startsWith("/app/me");
+  const onAuditArea = pathname.startsWith("/app/audit");
 
   useEffect(() => {
     if (!me) return;
     if (needsSetup && !onSetup) router.replace("/app/setup");
-    else if (!needsSetup && onSetup) router.replace(isEmployer ? "/app" : "/app/me");
-    else if (!isEmployer && isEmployee && !onEmployeeArea) router.replace("/app/me");
-  }, [me, needsSetup, onSetup, isEmployer, isEmployee, onEmployeeArea, router]);
+    else if (!needsSetup && onSetup) router.replace(isEmployer ? "/app" : isEmployee ? "/app/me" : "/app/audit");
+    else if (!isEmployer && isEmployee && !onEmployeeArea && !(isAuditor && onAuditArea)) router.replace("/app/me");
+    else if (!isEmployer && !isEmployee && isAuditor && !onAuditArea) router.replace("/app/audit");
+  }, [me, needsSetup, onSetup, isEmployer, isEmployee, isAuditor, onEmployeeArea, onAuditArea, router]);
 
   if (state.status === "error") {
     return (
@@ -123,8 +128,8 @@ function Authenticated({ account, signOut, children }: { account: UiWalletAccoun
     return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
   }
 
-  const nav = isEmployer && !onEmployeeArea ? employerNav : employeeNav;
-  const context = isEmployer && !onEmployeeArea ? company?.name : me.memberships[0]?.company.name;
+  const nav = isEmployer && !onEmployeeArea ? employerNav : isEmployee ? [...employeeNav, ...(isAuditor ? auditorNav : [])] : auditorNav;
+  const context = isEmployer && !onEmployeeArea ? company?.name : isEmployee ? me.memberships[0]?.company.name : me.audits[0]?.name;
 
   return (
     <AppContext.Provider value={value}>
