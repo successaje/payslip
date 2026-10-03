@@ -8,13 +8,12 @@
  * default export fetches and instantiates the WASM binary we copy to
  * public/zk at install time.
  */
-import init from "@solana/zk-sdk/web";
-
 let ready: Promise<void> | null = null;
 
 export function initZk(): Promise<void> {
+  if (typeof window === "undefined") return Promise.reject(new Error("zk-sdk is browser-only"));
   if (!ready) {
-    ready = init({ module_or_path: "/zk/zk_sdk_bg.wasm" }).then(() => undefined);
+    ready = import("@solana/zk-sdk/web").then(({ default: init }) => init({ module_or_path: "/zk/zk_sdk_bg.wasm" })).then(() => undefined);
   }
   return ready;
 }

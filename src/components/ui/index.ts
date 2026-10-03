@@ -10,3 +10,4 @@ export { Stepper, type Step, type StepState } from "./Stepper";
 export { Amount } from "./Amount";
 export { Spinner } from "./Spinner";
 export { PageHeader } from "./PageHeader";
+export { CopyButton } from "./CopyButton";

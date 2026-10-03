@@ -9,7 +9,7 @@ import { cn } from "@/lib/cn";
 import { CHAIN } from "@/lib/solana/config";
 import { describeError } from "@/lib/errors";
 
-function WalletRow({ wallet, onConnected }: { wallet: UiWallet; onConnected: (a: UiWalletAccount) => void }) {
+function WalletRow({ wallet, onConnected }: { wallet: UiWallet; onConnected: (accounts: readonly UiWalletAccount[]) => void }) {
   const [isConnecting, connect] = useConnect(wallet);
   const { toast } = useToast();
   const dev = wallet.name === "Payslip Dev Wallet";
@@ -20,10 +20,9 @@ function WalletRow({ wallet, onConnected }: { wallet: UiWallet; onConnected: (a:
       disabled={isConnecting}
       onClick={async () => {
         try {
-          const accounts = await connect();
-          const account = accounts.find((a) => a.chains.includes(CHAIN)) ?? accounts[0];
-          if (!account) throw new Error("The wallet did not return an account.");
-          onConnected(account);
+          const accounts = (await connect()).filter((a) => a.chains.includes(CHAIN));
+          if (accounts.length === 0) throw new Error("The wallet did not return an account for this network.");
+          onConnected(accounts);
         } catch (e) {
           const msg = describeError(e);
           if (!msg.cancelled) toast({ tone: "error", title: "Could not connect", description: msg.message });
@@ -49,18 +48,47 @@ export function ConnectWalletDialog({ open, onClose }: { open: boolean; onClose:
   const wallets = useWallets();
   const [, setSelected] = useSelectedWalletAccount();
   const [busy] = useState(false);
+  const [choices, setChoices] = useState<readonly UiWalletAccount[] | null>(null);
   const usable = wallets.filter((w) => w.chains.includes(CHAIN));
+
+  const close = () => {
+    setChoices(null);
+    onClose();
+  };
 
   return (
     <Dialog
       open={open}
-      onClose={onClose}
+      onClose={close}
       locked={busy}
       size="sm"
-      title="Connect a wallet"
-      description="Your wallet signs transactions and derives the keys that protect your balances. Payslip never sees them."
+      title={choices ? "Choose an account" : "Connect a wallet"}
+      description={
+        choices
+          ? "This wallet has more than one account. Pick the one to use with Payslip."
+          : "Your wallet signs transactions and derives the keys that protect your balances. Payslip never sees them."
+      }
     >
-      {usable.length === 0 ? (
+      {choices ? (
+        <div className="flex flex-col gap-2">
+          {choices.map((a) => (
+            <button
+              key={a.address}
+              type="button"
+              onClick={() => {
+                setSelected(a);
+                close();
+              }}
+              className="flex w-full items-center gap-3 rounded-[var(--radius-md)] border border-line px-3 py-2.5 text-left hover:bg-paper-sunken"
+            >
+              <span className="flex-1">
+                <span className="block text-[14px] font-medium text-ink">{a.label ?? "Account"}</span>
+                <span className="block font-mono text-[12px] text-ink-3">{a.address}</span>
+              </span>
+            </button>
+          ))}
+        </div>
+      ) : usable.length === 0 ? (
         <div className="rounded-[var(--radius-md)] border border-dashed border-line-strong p-4 text-center">
           <p className="text-[14px] font-medium text-ink">No Solana wallet found</p>
           <p className="mt-1 text-[13px] text-ink-3 text-pretty">
@@ -81,9 +109,13 @@ export function ConnectWalletDialog({ open, onClose }: { open: boolean; onClose:
             <WalletRow
               key={w.name}
               wallet={w}
-              onConnected={(account) => {
-                setSelected(account);
-                onClose();
+              onConnected={(accounts) => {
+                if (accounts.length === 1) {
+                  setSelected(accounts[0]);
+                  close();
+                } else {
+                  setChoices(accounts);
+                }
               }}
             />
           ))}

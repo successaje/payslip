@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useDisconnect, useWallets, uiWalletAccountBelongsToUiWallet, type UiWallet, type UiWalletAccount } from "@wallet-standard/react";
 import { useSelectedWalletAccount } from "@solana/react";
 import { AnimatePresence, motion } from "motion/react";
-import { Check, ChevronDown, Copy, ExternalLink, LogOut } from "lucide-react";
+import { ArrowLeftRight, Check, ChevronDown, Copy, ExternalLink, LogOut } from "lucide-react";
 import { shortAddress } from "@/lib/format";
 import { explorerUrl } from "@/lib/solana/config";
 import { cn } from "@/lib/cn";
@@ -100,6 +100,33 @@ export function AccountMenu({ account, onSignOut }: { account: UiWalletAccount; 
               <ExternalLink size={15} className="text-ink-3" />
               View on explorer
             </a>
+            {wallet && wallet.accounts.length > 1 && (
+              <>
+                <div className="my-1 h-px bg-line" />
+                <p className="px-2.5 pb-1 pt-1.5 text-[11px] font-medium uppercase tracking-[0.08em] text-ink-4">Switch account</p>
+                {wallet.accounts
+                  .filter((a) => a.address !== account.address)
+                  .map((a) => (
+                    <button
+                      key={a.address}
+                      type="button"
+                      role="menuitem"
+                      className={item}
+                      onClick={async () => {
+                        setOpen(false);
+                        await onSignOut?.();
+                        setSelected(a);
+                      }}
+                    >
+                      <ArrowLeftRight size={15} className="text-ink-3" />
+                      <span className="min-w-0 flex-1 truncate">
+                        {a.label ?? shortAddress(a.address)}
+                        <span className="ml-1 font-mono text-[12px] text-ink-3">{shortAddress(a.address)}</span>
+                      </span>
+                    </button>
+                  ))}
+              </>
+            )}
             <div className="my-1 h-px bg-line" />
             {wallet ? (
               <DisconnectItem
