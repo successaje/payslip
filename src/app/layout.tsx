@@ -48,10 +48,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       suppressHydrationWarning
       className={`${sans.variable} ${serif.variable} ${mono.variable} h-full`}
     >
-      <head>
-        <ThemeScript />
-      </head>
       <body className="min-h-full flex flex-col">
+        <ThemeScript />
         <ToastProvider>{children}</ToastProvider>
       </body>
     </html>

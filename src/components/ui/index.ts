@@ -9,3 +9,4 @@ export { EmptyState } from "./EmptyState";
 export { Stepper, type Step, type StepState } from "./Stepper";
 export { Amount } from "./Amount";
 export { Spinner } from "./Spinner";
+export { PageHeader } from "./PageHeader";

@@ -1,6 +1,8 @@
+import Script from "next/script";
+
 /**
  * Applies the stored or system theme before first paint so there is no flash.
- * Runs inline in <head>; must stay dependency-free.
+ * Runs before hydration via next/script; must stay dependency-free.
  */
 const script = `
 (function () {
@@ -14,5 +16,9 @@ const script = `
 `;
 
 export function ThemeScript() {
-  return <script dangerouslySetInnerHTML={{ __html: script }} />;
+  return (
+    <Script id="payslip-theme" strategy="beforeInteractive">
+      {script}
+    </Script>
+  );
 }
