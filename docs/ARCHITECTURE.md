@@ -72,8 +72,13 @@ Created client-side in one transaction when the company is set up:
 1. `SystemProgram.createAccount` sized for `ConfidentialTransferMint`.
 2. `InitializeConfidentialTransferMint { authority, autoApproveNewAccounts: true, auditorElgamalPubkey }`.
 3. `InitializeMint { decimals: 6, mintAuthority: vaultPda }`.
+4. `payslip_vault::init_vault` creates the vault's USDC account.
+5. The employer configures their own confidential account (the treasury).
 
-Mint authority is the vault PDA, so only wrapping USDC can create supply.
+Mint authority is the vault PDA, so only wrapping USDC can create supply. When
+`NEXT_PUBLIC_VAULT_PROGRAM_ID` is unset (devnet without a deployed program),
+the employer wallet is the authority and Treasury offers a labelled
+"add test funds" card instead of wrapping.
 
 ### Confidential transfer lifecycle
 
@@ -100,6 +105,15 @@ the `spl-token` CLI.
 
 Invariant: payroll token supply equals USDC vault balance.
 
+## Developer wallet
+
+`src/lib/solana/devWallet.ts` registers a wallet-standard wallet backed by two
+keypairs in `localStorage`, only when `NEXT_PUBLIC_ENABLE_DEV_WALLET=true` and
+the cluster is devnet. It implements the same features a real wallet does
+(connect, disconnect, events, signMessage, signTransaction,
+signAndSendTransaction), so the app has one code path. It exists so the whole
+product can be exercised in a browser without an extension.
+
 ## Server
 
 Route handlers under `src/app/api`. The database stores only what the chain
@@ -123,3 +137,6 @@ sets an HttpOnly session cookie.
   setting, and each company must have its own auditor.
 - **libsql** over Postgres: a file in development, Turso in production, no
   infrastructure to stand up during a four-week build.
+- **Hand-written vault client** over an IDL: Anchor 0.30.1's IDL generator does
+  not compile on current Rust; the three instructions are small enough to
+  encode directly (`sha256("global:<name>")[..8]` + Borsh `u64`).
