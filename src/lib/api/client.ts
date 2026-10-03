@@ -21,6 +21,23 @@ export interface Me {
   address: string;
   companies: Company[];
   memberships: { employee: Employee; company: { id: string; name: string; mint: string | null } }[];
+  /** Companies this wallet is the designated auditor of. */
+  audits: { id: string; name: string; mint: string | null; ownerAddress: string }[];
+}
+
+export interface AuditRow {
+  paymentId: string;
+  period: string;
+  employeeName: string;
+  employeeWallet: string | null;
+  recordedAmount: string;
+  signature: string;
+  paidAt: string | null;
+}
+
+export interface AuditData {
+  company: { id: string; name: string; mint: string | null; auditorAddress: string; auditorElgamalPubkey: string | null };
+  rows: AuditRow[];
 }
 
 export const api = {
@@ -62,6 +79,8 @@ export const api = {
 
   acceptInvite: (token: string, body: { configuredSignature: string }) =>
     request<Employee>(`/api/invites/${token}`, { method: "POST", body: JSON.stringify(body) }),
+
+  audit: (companyId: string) => request<AuditData>(`/api/companies/${companyId}/audit`),
 
   myPayslips: () =>
     request<{ company: { id: string; name: string; mint: string | null }; employee: Employee; payments: (Payment & { period: string })[] }[]>(
