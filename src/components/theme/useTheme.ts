@@ -5,6 +5,7 @@ import { useCallback, useSyncExternalStore } from "react";
 export type Theme = "light" | "dark";
 
 const KEY = "payslip.theme";
+const YEAR = 60 * 60 * 24 * 365;
 
 function subscribe(callback: () => void) {
   const observer = new MutationObserver(callback);
@@ -13,7 +14,9 @@ function subscribe(callback: () => void) {
 }
 
 function getSnapshot(): Theme {
-  return document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
+  const attr = document.documentElement.getAttribute("data-theme");
+  if (attr === "dark" || attr === "light") return attr;
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
 function getServerSnapshot(): Theme {
@@ -25,11 +28,7 @@ export function useTheme() {
 
   const setTheme = useCallback((next: Theme) => {
     document.documentElement.setAttribute("data-theme", next);
-    try {
-      localStorage.setItem(KEY, next);
-    } catch {
-      // Storage can be unavailable in private windows; the attribute still applies.
-    }
+    document.cookie = `${KEY}=${next}; path=/; max-age=${YEAR}; samesite=lax`;
   }, []);
 
   const toggle = useCallback(() => setTheme(theme === "dark" ? "light" : "dark"), [theme, setTheme]);

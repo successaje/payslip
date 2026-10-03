@@ -1,5 +1,8 @@
-import { AppHome } from "@/components/app/AppHome";
+import type { Metadata } from "next";
+import { Overview } from "@/components/employer/Overview";
 
-export default function AppPage() {
-  return <AppHome />;
+export const metadata: Metadata = { title: "Overview" };
+
+export default function OverviewPage() {
+  return <Overview />;
 }
