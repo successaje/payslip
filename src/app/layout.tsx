@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Instrument_Sans, Instrument_Serif, JetBrains_Mono } from "next/font/google";
-import { ThemeScript } from "@/components/theme/ThemeScript";
+import { cookies } from "next/headers";
 import { ToastProvider } from "@/components/ui/Toast";
 import "./globals.css";
 
@@ -41,15 +41,17 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  // Theme is a cookie so the server renders the right tokens: no flash, no inline script.
+  const stored = (await cookies()).get("payslip.theme")?.value;
+  const theme = stored === "dark" || stored === "light" ? stored : undefined;
   return (
     <html
       lang="en"
-      suppressHydrationWarning
+      data-theme={theme}
       className={`${sans.variable} ${serif.variable} ${mono.variable} h-full`}
     >
       <body className="min-h-full flex flex-col">
-        <ThemeScript />
         <ToastProvider>{children}</ToastProvider>
       </body>
     </html>

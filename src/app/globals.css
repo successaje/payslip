@@ -2,6 +2,10 @@
 
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
+/* Dark tokens live in one place and are applied either by the explicit
+   data-theme attribute (cookie-backed) or, when no preference is stored,
+   by the system setting. */
+
 /*
   Design tokens.
 
@@ -86,6 +90,42 @@
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.04);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.05);
   --shadow-lg: 0 24px 64px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --paper: #121211;
+    --paper-raised: #1a1917;
+    --paper-sunken: #0d0d0c;
+    --paper-inset: #232220;
+
+    --ink: #f1efe9;
+    --ink-2: #b9b5ac;
+    --ink-3: #807c74;
+    --ink-4: #514e48;
+
+    --line: #2a2926;
+    --line-strong: #3b3936;
+    --line-focus: #f1efe9;
+
+    --green: #4cc39a;
+    --green-strong: #6ad3ad;
+    --green-soft: #15302a;
+    --green-ink: #a9e6cf;
+
+    --amber: #e2b35c;
+    --amber-soft: #2e2512;
+    --red: #ff7b72;
+    --red-soft: #35191a;
+    --blue: #8aa2ff;
+    --blue-soft: #1a2140;
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.04);
+    --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    --shadow-lg: 0 24px 64px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.06);
+  }
 }
 
 @theme inline {
