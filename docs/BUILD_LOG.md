@@ -13,7 +13,7 @@ Milestones in order. Each line links the pull request that landed it.
 | 2026-10-03 | Run payroll end to end on devnet; treasury; employee home ([#6](https://github.com/successaje/payslip/pull/6)) | Done |
 | 2026-10-03 | Auditor view decrypting transfers from chain ([#7](https://github.com/successaje/payslip/pull/7)) | Done |
 | 2026-10-03 | Landing page; `payslip_vault` program written and compiled; app wired for wrap/unwrap | Done |
-| | Deploy vault program to devnet and verify wrap → pay → unwrap | Blocked on devnet SOL |
+| 2026-10-03 | Deploy vault program to devnet (`AjfdhEkypXPzBfxHL4rhX9UNMpzWbD51D56U8XVhcX2L`); setup creates mints with the vault PDA as authority; wrap verified | Done |
 | | Loading, error and empty state pass | In progress |
 | | Responsive pass | |
 | | Mainnet payroll with real amounts | |
