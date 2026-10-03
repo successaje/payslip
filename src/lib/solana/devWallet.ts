@@ -44,9 +44,16 @@ import { getSolanaClient } from "./rpc";
 
 const STORAGE_KEY = "payslip.devwallet.secret";
 
-function loadOrCreateSecret(): Uint8Array {
+/** Two accounts so an employer and an employee can be played from one browser. */
+const ACCOUNTS: { suffix: string; label: string }[] = [
+  { suffix: "", label: "Dev account 1" },
+  { suffix: ".2", label: "Dev account 2" },
+];
+
+function loadOrCreateSecret(suffix: string): Uint8Array {
+  const key = STORAGE_KEY + suffix;
   try {
-    const stored = localStorage.getItem(STORAGE_KEY);
+    const stored = localStorage.getItem(key);
     if (stored) return Uint8Array.from(JSON.parse(stored) as number[]);
   } catch {
     // fall through to create
@@ -57,11 +64,30 @@ function loadOrCreateSecret(): Uint8Array {
   full.set(secret, 0);
   full.set(pub, 32);
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(full)));
+    localStorage.setItem(key, JSON.stringify(Array.from(full)));
   } catch {
     // ignore
   }
   return full;
+}
+
+const CONNECTED_KEY = "payslip.devwallet.connected";
+
+function readConnected(): boolean {
+  try {
+    return localStorage.getItem(CONNECTED_KEY) === "1";
+  } catch {
+    return false;
+  }
+}
+
+function writeConnected(v: boolean) {
+  try {
+    if (v) localStorage.setItem(CONNECTED_KEY, "1");
+    else localStorage.removeItem(CONNECTED_KEY);
+  } catch {
+    // ignore
+  }
 }
 
 const ICON =
@@ -76,24 +102,36 @@ class DevWallet implements Wallet {
   readonly icon = ICON as Wallet["icon"];
   readonly chains = [CHAIN] as const;
 
-  #secret: Uint8Array;
-  #account: WalletAccount;
+  #secrets: Map<string, Uint8Array> = new Map();
+  #accounts: WalletAccount[] = [];
   #listeners: StandardEventsListeners["change"][] = [];
-  #connected = false;
+  // Like a real wallet that has already approved this site: stays connected across reloads.
+  #connected = readConnected();
 
   constructor() {
-    this.#secret = loadOrCreateSecret();
-    const pub = this.#secret.slice(32);
-    this.#account = {
-      address: getAddressDecoder().decode(pub),
-      publicKey: pub,
-      chains: [CHAIN],
-      features: [SolanaSignMessage, SolanaSignTransaction, SolanaSignAndSendTransaction],
-    };
+    for (const { suffix, label } of ACCOUNTS) {
+      const secret = loadOrCreateSecret(suffix);
+      const pub = secret.slice(32);
+      const address = getAddressDecoder().decode(pub);
+      this.#secrets.set(address, secret);
+      this.#accounts.push({
+        address,
+        publicKey: pub,
+        chains: [CHAIN],
+        features: [SolanaSignMessage, SolanaSignTransaction, SolanaSignAndSendTransaction],
+        label,
+      });
+    }
   }
 
   get accounts() {
-    return this.#connected ? [this.#account] : [];
+    return this.#connected ? this.#accounts : [];
+  }
+
+  #secretFor(account: WalletAccount): Uint8Array {
+    const s = this.#secrets.get(account.address);
+    if (!s) throw new Error("Unknown account");
+    return s;
   }
 
   get features(): StandardConnectFeature &
@@ -133,24 +171,26 @@ class DevWallet implements Wallet {
 
   #connect: StandardConnectFeature[typeof StandardConnect]["connect"] = async () => {
     this.#connected = true;
+    writeConnected(true);
     this.#emit();
     return { accounts: this.accounts };
   };
 
   #disconnect: StandardDisconnectFeature[typeof StandardDisconnect]["disconnect"] = async () => {
     this.#connected = false;
+    writeConnected(false);
     this.#emit();
   };
 
   #signMessage: SolanaSignMessageFeature[typeof SolanaSignMessage]["signMessage"] = async (...inputs) =>
-    inputs.map(({ message }) => ({
+    inputs.map(({ account, message }) => ({
       signedMessage: message,
-      signature: ed25519.sign(message, this.#secret.slice(0, 32)),
+      signature: ed25519.sign(message, this.#secretFor(account).slice(0, 32)),
       signatureType: "ed25519" as const,
     }));
 
-  async #signBytes(bytes: Uint8Array): Promise<Uint8Array> {
-    const signer = await createKeyPairSignerFromBytes(this.#secret);
+  async #signBytes(account: WalletAccount, bytes: Uint8Array): Promise<Uint8Array> {
+    const signer = await createKeyPairSignerFromBytes(this.#secretFor(account));
     const tx = getTransactionDecoder().decode(bytes);
     const signed = await partiallySignTransaction([signer.keyPair], tx);
     return new Uint8Array(getTransactionEncoder().encode(signed));
@@ -160,7 +200,7 @@ class DevWallet implements Wallet {
     ...inputs
   ) => {
     const out = [];
-    for (const { transaction } of inputs) out.push({ signedTransaction: await this.#signBytes(transaction) });
+    for (const { account, transaction } of inputs) out.push({ signedTransaction: await this.#signBytes(account, transaction) });
     return out;
   };
 
@@ -168,8 +208,8 @@ class DevWallet implements Wallet {
     async (...inputs) => {
       const { rpc } = getSolanaClient();
       const out = [];
-      for (const { transaction } of inputs) {
-        const signedBytes = await this.#signBytes(transaction);
+      for (const { account, transaction } of inputs) {
+        const signedBytes = await this.#signBytes(account, transaction);
         const signed = getTransactionDecoder().decode(signedBytes);
         await rpc
           .sendTransaction(getBase64EncodedWireTransaction(signed), { encoding: "base64", preflightCommitment: "confirmed" })

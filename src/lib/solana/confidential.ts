@@ -9,43 +9,43 @@
  * and the server never participates.
  */
 import type { Address, MessagePartialSigner, Signature, TransactionSigner } from "@solana/kit";
-import {
-  applyPendingBalance as sdkApply,
-  configureAccount as sdkConfigure,
-  decryptBalance as sdkDecrypt,
-  deposit as sdkDeposit,
-  transfer as sdkTransfer,
-  withdraw as sdkWithdraw,
-  deriveAuditorElgamalKeypair,
-  getAuditorElgamalPubkey,
-  decryptTransferAmountAsAuditor,
-  getElGamalPubkeyAddress,
-} from "@softseco/confidential-transfers";
 import { DECIMALS } from "@/lib/domain/money";
 import type { SolanaClient } from "./rpc";
 import { initZk } from "./zk";
 
 type Owner = TransactionSigner & MessagePartialSigner;
 
-export async function configureConfidentialAccount(client: SolanaClient, owner: Owner, mint: Address) {
+/**
+ * The SDK pulls in the zk-sdk WASM module at evaluation time, so it must only
+ * ever be loaded in the browser, after the WASM is initialised. Loading it
+ * lazily keeps it out of server rendering entirely.
+ */
+let sdkPromise: Promise<typeof import("@softseco/confidential-transfers")> | null = null;
+async function sdk() {
   await initZk();
-  const r = await sdkConfigure({ ...client, payer: owner, owner, mint });
+  if (!sdkPromise) sdkPromise = import("@softseco/confidential-transfers");
+  return sdkPromise;
+}
+
+export async function configureConfidentialAccount(client: SolanaClient, owner: Owner, mint: Address) {
+  const { configureAccount, getElGamalPubkeyAddress } = await sdk();
+  const r = await configureAccount({ ...client, payer: owner, owner, mint });
   return { token: r.token, signature: r.signature, elgamalPubkey: getElGamalPubkeyAddress(r.elgamalKeypair) };
 }
 
 export async function depositToConfidential(client: SolanaClient, owner: Owner, mint: Address, amount: bigint) {
-  await initZk();
-  return sdkDeposit({ ...client, payer: owner, owner, mint, amount, decimals: DECIMALS });
+  const { deposit } = await sdk();
+  return deposit({ ...client, payer: owner, owner, mint, amount, decimals: DECIMALS });
 }
 
 export async function applyPending(client: SolanaClient, owner: Owner, mint: Address) {
-  await initZk();
-  return sdkApply({ ...client, payer: owner, owner, mint });
+  const { applyPendingBalance } = await sdk();
+  return applyPendingBalance({ ...client, payer: owner, owner, mint });
 }
 
 export async function decryptAvailableBalance(client: SolanaClient, owner: Owner, mint: Address): Promise<bigint> {
-  await initZk();
-  return sdkDecrypt({ rpc: client.rpc, owner, mint });
+  const { decryptBalance } = await sdk();
+  return decryptBalance({ rpc: client.rpc, owner, mint });
 }
 
 export interface ConfidentialTransferResult {
@@ -63,8 +63,8 @@ export async function confidentialTransfer(
   amount: bigint,
   auditorElgamalPubkey: Address | null,
 ): Promise<ConfidentialTransferResult> {
-  await initZk();
-  const r = await sdkTransfer({
+  const { transfer } = await sdk();
+  const r = await transfer({
     ...client,
     payer: owner,
     owner,
@@ -77,19 +77,19 @@ export async function confidentialTransfer(
 }
 
 export async function withdrawToPublic(client: SolanaClient, owner: Owner, mint: Address, amount: bigint) {
-  await initZk();
-  return sdkWithdraw({ ...client, payer: owner, owner, mint, amount, decimals: DECIMALS });
+  const { withdraw } = await sdk();
+  return withdraw({ ...client, payer: owner, owner, mint, amount, decimals: DECIMALS });
 }
 
 /** The auditor's ElGamal public key, derived from their wallet with one signature. */
 export async function auditorPublicKey(auditor: MessagePartialSigner): Promise<Address> {
-  await initZk();
+  const { getAuditorElgamalPubkey, deriveAuditorElgamalKeypair } = await sdk();
   return getAuditorElgamalPubkey(await deriveAuditorElgamalKeypair(auditor));
 }
 
 /** Recovers the amount of a confidential transfer as the mint's auditor. */
 export async function auditTransferAmount(client: SolanaClient, auditor: MessagePartialSigner, signature: Signature): Promise<bigint> {
-  await initZk();
+  const { deriveAuditorElgamalKeypair, decryptTransferAmountAsAuditor } = await sdk();
   const auditorKeypair = await deriveAuditorElgamalKeypair(auditor);
   return decryptTransferAmountAsAuditor({ rpc: client.rpc, signature, auditorKeypair });
 }
