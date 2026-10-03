@@ -1,4 +1,4 @@
-import { integer, sqliteTable, text, uniqueIndex, index } from "drizzle-orm/sqlite-core";
+import { sqliteTable, text, uniqueIndex, index } from "drizzle-orm/sqlite-core";
 import { sql } from "drizzle-orm";
 
 /**
@@ -110,4 +110,3 @@ export type Company = typeof companies.$inferSelect;
 export type Employee = typeof employees.$inferSelect;
 export type PayrollRun = typeof payrollRuns.$inferSelect;
 export type Payment = typeof payments.$inferSelect;
-export const _unused = integer; // keeps the import for future numeric columns
