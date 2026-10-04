@@ -226,6 +226,47 @@
   }
 }
 
+@layer components {
+  .prose-payslip h2 {
+    margin-top: 2.25rem;
+    margin-bottom: 0.6rem;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .prose-payslip p,
+  .prose-payslip li {
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--ink-2);
+    text-wrap: pretty;
+  }
+  .prose-payslip p + p {
+    margin-top: 0.75rem;
+  }
+  .prose-payslip ul {
+    margin-top: 0.5rem;
+    padding-left: 1.1rem;
+    list-style: disc;
+  }
+  .prose-payslip li + li {
+    margin-top: 0.35rem;
+  }
+  .prose-payslip code {
+    font-family: var(--font-mono), monospace;
+    font-size: 13px;
+    background: var(--paper-inset);
+    padding: 0.1em 0.35em;
+    border-radius: 4px;
+  }
+  .prose-payslip a {
+    color: var(--ink);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
 @layer utilities {
   /* Tabular numerals for every amount, hash and date column. */
   .tnum {
