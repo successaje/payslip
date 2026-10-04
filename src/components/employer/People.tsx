@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Link2, MoreHorizontal, Plus, UserPlus, Users } from "lucide-react";
+import { Link2, Mail, MoreHorizontal, Plus, UserPlus, Users } from "lucide-react";
 import { useApp } from "@/components/app/AppContext";
 import { Amount, Badge, Button, Card, EmptyState, PageHeader, SkeletonRows, useToast } from "@/components/ui";
 import { CopyButton } from "@/components/ui/CopyButton";
@@ -17,6 +17,20 @@ import { RowMenu } from "./RowMenu";
 function inviteUrl(token: string) {
   const base = typeof window !== "undefined" ? window.location.origin : APP_URL;
   return `${base}/join/${token}`;
+}
+
+function inviteMailto(p: Employee, company: string, url: string) {
+  const subject = `${company} wants to pay you privately with Payslip`;
+  const body = [
+    `Hi ${p.name.split(" ")[0]},`,
+    "",
+    `${company} is setting up private payouts on Payslip. Open this link, connect the wallet you want to be paid to, and follow the two prompts. It takes about a minute.`,
+    "",
+    url,
+    "",
+    "Only you can see your payout amounts. The company's auditor can verify them. Nobody else can.",
+  ].join("\n");
+  return `mailto:${encodeURIComponent(p.email ?? "")}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
 function StatusBadge({ e }: { e: Employee }) {
@@ -139,6 +153,13 @@ export function People() {
                               onSelect: async () => {
                                 await navigator.clipboard.writeText(inviteUrl(p.inviteToken));
                                 toast({ tone: "success", title: "Invite link copied", description: `Send it to ${p.name}.` });
+                              },
+                            },
+                            {
+                              label: "Email invite",
+                              icon: <Mail size={14} />,
+                              onSelect: () => {
+                                window.location.href = inviteMailto(p, company.name, inviteUrl(p.inviteToken));
                               },
                             },
                           ]
