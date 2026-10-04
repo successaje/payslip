@@ -109,9 +109,9 @@ export function RunDetail({ runId }: { runId: string }) {
       await resource.reload();
       setLive({});
       if (result.failed === 0 && !result.stopped) {
-        toast({ tone: "success", title: "Payroll complete", description: `${result.paid} ${result.paid === 1 ? "person" : "people"} paid. Amounts are not visible on-chain.` });
+        toast({ tone: "success", title: "Batch complete", description: `${result.paid} ${result.paid === 1 ? "person" : "people"} paid. Amounts are not visible on-chain.` });
       } else if (result.stopped) {
-        toast({ title: "Payroll paused", description: `${result.paid} paid so far. Resume whenever you are ready.` });
+        toast({ title: "Batch paused", description: `${result.paid} paid so far. Resume whenever you are ready.` });
       } else {
         toast({ tone: "warning", title: "Some payments failed", description: `${result.paid} paid, ${result.failed} failed. Retry the failed ones.` });
       }
@@ -182,7 +182,7 @@ export function RunDetail({ runId }: { runId: string }) {
                 onClick={start}
                 disabled={inFlight}
               >
-                {paid > 0 ? `Pay remaining ${remaining}` : "Run payroll"}
+                {paid > 0 ? `Pay remaining ${remaining}` : "Send payouts"}
               </Button>
             ) : null}
           </>
@@ -199,7 +199,7 @@ export function RunDetail({ runId }: { runId: string }) {
           >
             <p className="text-[14px] font-medium text-amber">Treasury is short</p>
             <p className="mt-1 text-[13px] text-ink-2">
-              Private balance available: <Amount value={treasury.available ?? 0n} size="sm" />. This run needs{" "}
+              Private balance available: <Amount value={treasury.available ?? 0n} size="sm" />. This batch needs{" "}
               <Amount value={paymentsToAttempt(rows).reduce((s, p) => s + BigInt(p.amount), 0n)} size="sm" />.
             </p>
             <Link href="/app/treasury" className="mt-2 inline-block text-[13px] font-medium text-ink underline underline-offset-2">
@@ -266,7 +266,7 @@ export function RunDetail({ runId }: { runId: string }) {
           })}
         </ul>
         <div className="flex items-center justify-between px-5 py-3 text-[13px] text-ink-3">
-          <span>{publicView ? "Amounts are encrypted on-chain. This is what anyone else sees." : "Run total"}</span>
+          <span>{publicView ? "Amounts are encrypted on-chain. This is what anyone else sees." : "Batch total"}</span>
           <Amount value={run.total} hidden={publicView} className="text-ink-2" />
         </div>
       </Card>
@@ -289,7 +289,7 @@ export function RunDetail({ runId }: { runId: string }) {
 function BackLink() {
   return (
     <Link href="/app/payroll" className="mb-4 inline-flex items-center gap-1 text-[13px] text-ink-3 hover:text-ink">
-      <ArrowLeft size={14} /> All runs
+      <ArrowLeft size={14} /> All batches
     </Link>
   );
 }

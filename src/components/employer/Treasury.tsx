@@ -16,7 +16,7 @@ import { parseUsd } from "@/lib/domain/money";
 import { describeError } from "@/lib/errors";
 
 /**
- * The company treasury: a public balance of the payroll token, and a private
+ * The workspace treasury: a public balance of the payout token, and a private
  * (confidential) balance that payroll is paid from. Funding on devnet mints
  * test funds directly because the employer wallet is the mint authority;
  * the vault program replaces this with wrapping USDC.
@@ -94,7 +94,7 @@ export function Treasury() {
     try {
       await depositToConfidential(client, signer, mint, holder.publicAmount);
       await applyPending(client, signer, mint);
-      toast({ tone: "success", title: "Moved to private balance", description: "Payroll is paid from here." });
+      toast({ tone: "success", title: "Moved to private balance", description: "Payouts are sent from here." });
       await refresh();
       await reveal();
     } catch (e) {
@@ -109,7 +109,7 @@ export function Treasury() {
     <>
       <PageHeader
         title="Treasury"
-        description="Payroll is paid from your private balance. Only you can read it; the explorer sees an encrypted number."
+        description="Payouts are sent from your private balance. Only you can read it; the explorer sees an encrypted number."
         actions={
           <Button variant="secondary" leadingIcon={<RefreshCw size={14} />} onClick={refresh}>
             Refresh
@@ -119,7 +119,7 @@ export function Treasury() {
 
       {holder && !holder.configured && (
         <Card className="mb-4">
-          <CardHeader title="Prepare your treasury account" description="One signature and one transaction. This registers a private balance for your wallet on the payroll token." />
+          <CardHeader title="Prepare your treasury account" description="One signature and one transaction. This registers a private balance for your wallet on the payout token." />
           <CardBody>
             <Button loading={busy === "configure"} loadingLabel="Preparing…" onClick={configure}>
               Prepare treasury
@@ -145,7 +145,7 @@ export function Treasury() {
         <Card>
           <CardHeader
             title="Public balance"
-            description="Visible to anyone. Move it to private before running payroll."
+            description="Visible to anyone. Move it to private before sending payouts."
             action={holder && !holder.configured ? <Badge tone="amber">Not configured</Badge> : null}
           />
           <CardBody>

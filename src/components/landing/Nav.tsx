@@ -17,7 +17,7 @@ export function Nav() {
             How it works
           </a>
           <a href="#roles" className="hover:text-ink">
-            For your team
+            Who it is for
           </a>
           <a href="#solana" className="hover:text-ink">
             Built on Solana

@@ -30,7 +30,7 @@ const slide = {
 function Explainer({ company }: { company: string }) {
   const rows = [
     { icon: <Lock size={15} />, text: `${company} pays you in USDC. The amount is encrypted on-chain.` },
-    { icon: <Eye size={15} />, text: "Only you can see your pay. Not your colleagues, not the public." },
+    { icon: <Eye size={15} />, text: "Only you can see the amount. Not your colleagues, not the public." },
     { icon: <ShieldCheck size={15} />, text: `${company}'s auditor can verify totals but cannot touch your money.` },
   ];
   return (
@@ -110,7 +110,7 @@ function SetupStep({ account, token, invite, onDone }: { account: UiWalletAccoun
       <>
         <p className="text-[14px] text-ink-2 text-pretty">
           Your wallet will ask for one signature to derive your private keys, then one transaction to register your
-          account for {invite.company.name}&apos;s payroll.
+          account for {invite.company.name}&apos;s payouts.
         </p>
         <Button block size="lg" className="mt-5" trailingIcon={<ArrowRight size={16} />} onClick={run}>
           Set up my private account

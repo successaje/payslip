@@ -28,7 +28,7 @@ export function MyPay({ full = false }: { full?: boolean }) {
 
   const payslips = useResource(() => api.myPayslips(), [account.address]);
   const holder = useResource(
-    () => (mint ? readHolderState(client, toAddress(account.address), mint) : Promise.reject(new Error("No payroll token"))),
+    () => (mint ? readHolderState(client, toAddress(account.address), mint) : Promise.reject(new Error("No payout token"))),
     [client, account.address, mint],
   );
 
@@ -104,7 +104,7 @@ export function MyPay({ full = false }: { full?: boolean }) {
   return (
     <>
       <PageHeader
-        title={full ? "Payslips" : "My pay"}
+        title={full ? "Statements" : "My payouts"}
         description={full ? `Everything ${membership.company.name} has paid you.` : `From ${membership.company.name}. Only you can read these numbers.`}
         actions={
           <Button variant="secondary" leadingIcon={<RefreshCw size={14} />} onClick={() => Promise.all([holder.reload(), payslips.reload()])}>
@@ -162,7 +162,7 @@ export function MyPay({ full = false }: { full?: boolean }) {
       )}
 
       <Card className={full ? "" : "mt-4"}>
-        {!full && <CardHeader title="Recent payslips" action={<Link href="/app/me/payslips" className="inline-flex items-center gap-1 text-[13px] text-ink-2 hover:text-ink">All <ArrowRight size={13} /></Link>} />}
+        {!full && <CardHeader title="Recent payouts" action={<Link href="/app/me/payslips" className="inline-flex items-center gap-1 text-[13px] text-ink-2 hover:text-ink">All <ArrowRight size={13} /></Link>} />}
         {payslips.status === "loading" ? (
           <CardBody>
             <Skeleton className="h-10 w-full" />

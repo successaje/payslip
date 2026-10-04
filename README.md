@@ -1,52 +1,59 @@
 # Payslip
 
-**Private stablecoin payroll on Solana.** Salaries are hidden on-chain, readable
-only by the employee who received them and the auditor the company designates.
+**Private USDC payouts on Solana.** Salaries, contractor invoices, grant
+tranches and bounty prizes, sent in one batch with the amounts encrypted
+on-chain. Readable only by the person who received them and the auditor the
+payer designates.
 
 > Built for Colosseum's Crypto World's Fair (September–October 2026). Not
 > audited. Devnet only until the vault program is deployed and reviewed.
 
-![Payslip demo: landing, run payroll, explorer view, employee decrypt, auditor verify](docs/media/demo.gif)
+![Payslip demo: landing, send a batch, explorer view, recipient decrypt, auditor verify](docs/media/demo.gif)
 
 ## The problem
 
-Remote teams already pay in USDC. The transfer is instant and cheap, and every
-salary is public. Anyone who finds the company's wallet can read what each
-colleague earns, forever. Existing stablecoin payroll products inherit this
-leak. The only fixes today are juggling many wallets or going back to the bank.
+Teams, DAOs and grant programs already pay people in USDC. The transfer is
+instant and cheap, and every amount is public. Anyone who finds the paying
+wallet can read what each person received, forever. Bounty boards and DAOs
+publish every amount today because there has been no alternative. Web2 payroll
+products (Deel, Remote, Rippling) cannot fix this: the transparency comes from
+the chain, not from the app.
 
 ## What Payslip does
 
-The employer keeps a roster and presses **Run payroll**. Every employee is paid
-in one batch using Solana Token-2022 **confidential balances**: the transfer is
-on-chain, the amount is encrypted. Each employee decrypts only their own pay.
-The company's auditor holds a key that decrypts every transfer and spends
-nothing. The explorer shows that payroll happened, and nothing else.
+The payer keeps a roster and presses **Send payouts**. Everyone is paid in one
+batch using Solana Token-2022 **confidential balances**: the transfer is
+on-chain, the amount is encrypted. Each recipient decrypts only their own
+amount. The payer's auditor holds a key that decrypts every transfer and spends
+nothing. The explorer shows that payouts happened, and nothing else.
+
+It is the only payout tool where the amounts are not public.
 
 Three views of the same run:
 
 | Who | Sees |
 |---|---|
 | Anyone with an explorer | Transfers between accounts. No amounts. |
-| An employee | Their own balance and payslips, decrypted locally with their wallet. |
+| A recipient | Their own balance and statements, decrypted locally with their wallet. |
 | The auditor | Every amount, recovered from the transaction signatures. Cannot move funds. |
 
 ## How it works
 
-1. **Create a company.** One transaction creates the payroll token: a Token-2022
-   mint with the confidential-transfer extension and the auditor's ElGamal
-   public key set at creation. The mint authority is the vault program's PDA.
-2. **Invite people.** Each person opens a link, connects a wallet, signs once to
-   derive their keys, and sends one transaction to register a confidential
-   account for the company's mint.
-3. **Fund the treasury.** Wrap USDC into the payroll token through the vault
+1. **Create a workspace.** One transaction creates the payout token: a
+   Token-2022 mint with the confidential-transfer extension and the auditor's
+   ElGamal public key set at creation. The mint authority is the vault program's
+   PDA.
+2. **Invite recipients.** Employees, contractors, grantees, bounty winners. Each
+   opens a link, connects a wallet, signs once to derive their keys, and sends
+   one transaction to register a confidential account for the workspace's mint.
+3. **Fund the treasury.** Wrap USDC into the payout token through the vault
    (1:1, no admin), then move it to the private balance.
-4. **Run payroll.** Proofs are generated in the employer's browser. Each
-   transfer lands with its amount encrypted. Progress is persisted after every
-   stage so a run can be resumed without paying anyone twice.
-5. **Everyone sees what they should.** Employees confirm receipt and decrypt
+4. **Send a batch.** Proofs are generated in the payer's browser. Each transfer
+   lands with its amount encrypted. Progress is persisted after every stage so a
+   batch can be resumed without paying anyone twice.
+5. **Everyone sees what they should.** Recipients confirm receipt and decrypt
    their balance. The auditor decrypts every transfer from chain and compares
-   with the books. Employees can withdraw to a visible balance and convert back
+   with the books. Recipients can withdraw to a visible balance and convert back
    to USDC.
 
 See [docs/PRODUCT.md](docs/PRODUCT.md) for the product model,
@@ -61,7 +68,7 @@ See [docs/PRODUCT.md](docs/PRODUCT.md) for the product model,
 | Token-2022 `ConfidentialTransferMint` with auditor ElGamal key, auto-approve | [`src/lib/solana/mint.ts`](src/lib/solana/mint.ts) |
 | Confidential configure, deposit, apply, transfer, withdraw (ZK proofs in WASM, in the browser) | [`src/lib/solana/confidential.ts`](src/lib/solana/confidential.ts) |
 | Auditor key derivation and per-transfer decryption from a signature | [`src/lib/solana/confidential.ts`](src/lib/solana/confidential.ts), [`src/components/auditor/Audit.tsx`](src/components/auditor/Audit.tsx) |
-| Browser payroll runner with persisted per-stage progress | [`src/lib/payroll/runner.ts`](src/lib/payroll/runner.ts) |
+| Browser batch runner with persisted per-stage progress | [`src/lib/payroll/runner.ts`](src/lib/payroll/runner.ts) |
 | `payslip_vault` program: USDC wrap/unwrap, vault PDA as mint authority | [`program/`](program/), client in [`src/lib/solana/vault.ts`](src/lib/solana/vault.ts) |
 | Wallet-standard signing through `@solana/kit` with cached key-derivation signature | [`src/lib/solana/signers.ts`](src/lib/solana/signers.ts) |
 | Sign-in with Solana (ed25519-verified session) | [`src/lib/auth/`](src/lib/auth/) |
@@ -75,9 +82,9 @@ and wallet-standard.
 | Party | Can see | Cannot |
 |---|---|---|
 | Public | That a transfer happened, sender, recipient, time | Any amount |
-| Employee | Their own balance and payslips | Anyone else's amount |
+| Recipient | Their own balance and statements | Anyone else's amount |
 | Auditor | Every transfer amount on the company mint | Spend, freeze, or move funds |
-| Payslip server | Names, emails, invite links, amounts the employer typed | Keys, decrypted balances, anything the public cannot see on-chain |
+| Payslip server | Names, emails, invite links, amounts the payer typed | Keys, decrypted balances, anything the public cannot see on-chain |
 
 Proofs and decryption run in the browser. The server never receives a key or
 a decrypted amount.
@@ -96,7 +103,7 @@ npm run dev                  # http://localhost:3200
 ### Developer wallet (devnet)
 
 Set `NEXT_PUBLIC_ENABLE_DEV_WALLET=true` in `.env.local` to register a
-devnet-only wallet-standard wallet with two accounts, so employer and employee
+devnet-only wallet-standard wallet with two accounts, so payer and recipient
 flows can be exercised in one browser without an extension. It is never
 registered on mainnet. Fund its accounts with devnet SOL (the address is shown
 in the account menu).
@@ -150,12 +157,13 @@ docs                 product model, architecture, design system, build log
 
 ## Status and roadmap
 
-Working on devnet end to end: company creation, invites, treasury, payroll
-runs, employee decrypt and withdraw, auditor decrypt and CSV export. The vault
+Working on devnet end to end: workspace creation, invites, treasury, payout
+batches, recipient decrypt and withdraw, auditor decrypt and CSV export. The vault
 program is compiled and wired; deployment is next. After that: mainnet run
 with real amounts, Transaction V1 single-transaction transfers, fee sponsorship
-for employee onboarding, per-transfer recipient decryption for payslips, local
-off-ramps.
+for recipient onboarding, per-transfer recipient decryption for statements,
+local off-ramps, and a public "pay a bounty privately" link for DAOs and grant
+programs.
 
 ## License
 

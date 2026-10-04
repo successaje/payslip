@@ -42,7 +42,7 @@ function Generator({ account }: { account: UiWalletAccount }) {
             </Button>
             <p className="mt-4 text-[13px] text-ink-3 text-pretty">
               Send this to the person setting up the company along with your wallet address. The key lets you read
-              salary amounts for their payroll token. It cannot spend anything.
+              payout amounts for their payout token. It cannot spend anything.
             </p>
           </>
         ) : (

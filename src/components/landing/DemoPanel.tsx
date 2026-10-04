@@ -7,21 +7,21 @@ import { Amount } from "@/components/ui";
 import { cn } from "@/lib/cn";
 
 /**
- * The product in one panel: the same payroll run seen three ways. Amounts are
+ * The product in one panel: the same payout batch seen three ways. Amounts are
  * illustrative; the layout is the real run-detail layout.
  */
 const people = [
-  { name: "Ada Okafor", role: "Designer", amount: 2_350_000_000n, sig: "5vXR…NWaz" },
-  { name: "Tunde Bello", role: "Engineer", amount: 4_100_000_000n, sig: "3kFq…p9Ue" },
-  { name: "Mara Ilić", role: "Ops", amount: 1_800_000_000n, sig: "9bLw…Qd2n" },
-  { name: "Yusuf Adeyemi", role: "Engineer", amount: 3_900_000_000n, sig: "7cHn…mA4r" },
+  { name: "Ada Okafor", role: "Designer · salary", amount: 2_350_000_000n, sig: "5vXR…NWaz" },
+  { name: "Tunde Bello", role: "Contractor · invoice", amount: 4_100_000_000n, sig: "3kFq…p9Ue" },
+  { name: "Mara Ilić", role: "Grantee · tranche 2", amount: 1_800_000_000n, sig: "9bLw…Qd2n" },
+  { name: "Yusuf Adeyemi", role: "Bounty winner", amount: 3_900_000_000n, sig: "7cHn…mA4r" },
 ];
 
 type View = "explorer" | "employee" | "auditor";
 
 const views: { key: View; label: string; icon: React.ReactNode; blurb: string }[] = [
   { key: "explorer", label: "Anyone", icon: <Globe size={14} />, blurb: "Four transfers happened. That is all the chain shows." },
-  { key: "employee", label: "Ada", icon: <Eye size={14} />, blurb: "Ada decrypts her own pay with her wallet. Nothing else." },
+  { key: "employee", label: "Ada", icon: <Eye size={14} />, blurb: "Ada decrypts her own payout with her wallet. Nothing else." },
   { key: "auditor", label: "Auditor", icon: <ShieldCheck size={14} />, blurb: "The auditor key reveals every amount and cannot spend." },
 ];
 
@@ -44,7 +44,7 @@ export function DemoPanel() {
     <div className="rounded-[var(--radius-xl)] border border-line bg-paper-raised shadow-[var(--shadow-lg)]">
       <div className="flex flex-col gap-3 border-b border-line px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2">
-          <span className="text-[12px] font-medium uppercase tracking-[0.08em] text-ink-3">October payroll · seen by</span>
+          <span className="text-[12px] font-medium uppercase tracking-[0.08em] text-ink-3">October payouts · seen by</span>
         </div>
         <div className="flex gap-1 rounded-[var(--radius-md)] bg-paper-inset p-1">
           {views.map((v) => (
