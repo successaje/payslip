@@ -254,12 +254,21 @@ export function Footer() {
           <Mark size={18} />
           <span>Payslip · Built for Colosseum&apos;s Crypto World&apos;s Fair, 2026</span>
         </div>
-        <div className="flex items-center gap-5">
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
           <a href="https://github.com/successaje/payslip" target="_blank" rel="noreferrer" className="hover:text-ink">
             GitHub
           </a>
-          <a href="#how" className="hover:text-ink">
-            How it works
+          <Link href="/security" className="hover:text-ink">
+            Security
+          </Link>
+          <Link href="/changelog" className="hover:text-ink">
+            Changelog
+          </Link>
+          <Link href="/auditor-key" className="hover:text-ink">
+            Auditor key
+          </Link>
+          <a href="mailto:hello@payslip.so" className="hover:text-ink">
+            Contact
           </a>
           <span className="inline-flex items-center gap-1">
             <Eye size={12} /> Not audited. Devnet only for now.

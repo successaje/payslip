@@ -24,10 +24,17 @@ const mono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3200"),
   title: {
-    default: "Payslip",
+    default: "Payslip · Private USDC payouts on Solana",
     template: "%s · Payslip",
   },
+  openGraph: {
+    title: "Payslip · Private USDC payouts on Solana",
+    description: "Salaries, invoices, grants and bounties with amounts encrypted on-chain. Readable only by the recipient and the auditor.",
+    type: "website",
+  },
+  twitter: { card: "summary_large_image" },
   description:
     "Private USDC payouts on Solana. Salaries, invoices, grants and bounties with amounts encrypted on-chain, visible only to the recipient and the auditor.",
 };
