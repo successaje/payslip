@@ -95,7 +95,7 @@ export function People() {
           <div className="hidden grid-cols-[1.6fr_1fr_1fr_auto] gap-4 px-5 py-3 text-[12px] font-medium uppercase tracking-[0.06em] text-ink-3 md:grid hairline">
             <span>Person</span>
             <span>Status</span>
-            <span className="text-right">Monthly</span>
+            <span className="text-right">Per batch</span>
             <span className="w-24" />
           </div>
           <ul>
@@ -152,7 +152,7 @@ export function People() {
             ))}
           </ul>
           <div className="flex items-center justify-between px-5 py-3 text-[13px] text-ink-3">
-            <span>Monthly total</span>
+            <span>Batch total</span>
             <Amount value={totals.monthly} className="text-ink-2" />
           </div>
         </Card>

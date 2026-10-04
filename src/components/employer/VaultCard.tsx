@@ -13,7 +13,7 @@ import type { SolanaClient } from "@/lib/solana/rpc";
 import type { WalletSigner } from "@/lib/solana/signers";
 
 /**
- * Wrap USDC into the payroll token and back through the vault program.
+ * Wrap USDC into the payout token and back through the vault program.
  * Shown wherever a wallet holds a public payroll balance or USDC.
  */
 export function VaultCard({
@@ -77,8 +77,8 @@ export function VaultCard({
         title={tab === "wrap" ? "Add USDC" : "Convert to USDC"}
         description={
           tab === "wrap"
-            ? "USDC goes into the company vault and you receive the same amount of payroll token."
-            : "Burns payroll token and returns the same amount of USDC from the vault."
+            ? "USDC goes into the workspace vault and you receive the same amount of payout token."
+            : "Burns payout token and returns the same amount of USDC from the vault."
         }
         action={
           <div className="flex gap-1 rounded-[var(--radius-md)] bg-paper-inset p-1">
@@ -101,7 +101,7 @@ export function VaultCard({
             Your USDC: <Amount value={usdc.data ?? 0n} size="sm" className="text-ink-2" />
           </span>
           <span>
-            Payroll token (visible): <Amount value={publicPayroll} size="sm" className="text-ink-2" />
+            Payout token (visible): <Amount value={publicPayroll} size="sm" className="text-ink-2" />
           </span>
           <span className="inline-flex items-center gap-1.5">
             Vault holds <Amount value={vault.data ?? 0n} size="sm" className="text-ink-2" /> <Badge tone="green">1:1 backed</Badge>

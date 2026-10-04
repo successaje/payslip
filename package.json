@@ -56,5 +56,5 @@
     "typescript": "^5",
     "vitest": "^5.0.3"
   },
-  "description": "Private stablecoin payroll on Solana. Salaries hidden on-chain, visible to the employee and the auditor."
+  "description": "Private USDC payouts on Solana. Salaries, invoices, grants and bounties with amounts encrypted on-chain, readable only by the recipient and the auditor."
 }

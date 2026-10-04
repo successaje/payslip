@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     template: "%s · Payslip",
   },
   description:
-    "Private stablecoin payroll on Solana. Salaries hidden on-chain, visible to the employee and the auditor.",
+    "Private USDC payouts on Solana. Salaries, invoices, grants and bounties with amounts encrypted on-chain, visible only to the recipient and the auditor.",
 };
 
 export const viewport: Viewport = {

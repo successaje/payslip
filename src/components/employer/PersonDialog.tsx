@@ -23,7 +23,7 @@ export function PersonDialog({ companyId, open, onClose, person, onSaved }: Prop
       onClose={onClose}
       locked={busy}
       title={person ? `Edit ${person.name}` : "Add a person"}
-      description={person ? "Changes apply to the next payroll run." : "They get a link to connect their wallet. You can pay them once they are set up."}
+      description={person ? "Changes apply to the next batch." : "They get a link to connect their wallet. You can pay them once they are set up."}
       footer={
         <>
           <Button variant="ghost" onClick={onClose} disabled={busy}>
@@ -100,7 +100,7 @@ function PersonForm({
         <div className="grid gap-4 sm:grid-cols-2">
           <Input label="Role" labelAside="Optional" value={role} onChange={(e) => setRole(e.target.value)} placeholder="Designer" />
           <Input
-            label="Monthly pay"
+            label="Amount per batch"
             mono
             inputMode="decimal"
             leading={<span className="text-[13px]">$</span>}
@@ -108,7 +108,7 @@ function PersonForm({
             onChange={(e) => setAmount(e.target.value)}
             error={errors.amount}
             placeholder="2,350.00"
-            hint="Paid in USDC, encrypted on-chain."
+            hint="Salary, invoice, grant or bounty. Paid in USDC, encrypted on-chain."
           />
         </div>
         <Input

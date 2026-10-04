@@ -13,10 +13,10 @@ export function Overview() {
 
   return (
     <>
-      <PageHeader title={company.name} description="Private payroll on Solana. Amounts are encrypted on-chain." />
+      <PageHeader title={company.name} description="Private payouts on Solana. Amounts are encrypted on-chain." />
       <div className="grid gap-4 md:grid-cols-2">
         <Card>
-          <CardHeader title="Payroll token" description="Your company's confidential token, backed by USDC." />
+          <CardHeader title="Payout token" description="Your workspace's confidential token, backed by USDC." />
           <CardBody>
             {company.mint ? (
               <a

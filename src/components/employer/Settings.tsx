@@ -53,7 +53,7 @@ export function Settings() {
 
   return (
     <>
-      <PageHeader title="Settings" description="Company details and the on-chain facts behind your payroll." />
+      <PageHeader title="Settings" description="Workspace details and the on-chain facts behind your payouts." />
 
       <Card>
         <CardHeader title="Company" />
@@ -70,11 +70,11 @@ export function Settings() {
       <Card className="mt-4">
         <CardHeader
           title="On-chain"
-          description="These were fixed when the company was created. Changing the auditor means creating a new payroll token."
+          description="These were fixed when the workspace was created. Changing the auditor means creating a new payout token."
           action={<Badge tone={CLUSTER === "mainnet-beta" ? "green" : "amber"}>{CLUSTER === "mainnet-beta" ? "Mainnet" : "Devnet"}</Badge>}
         />
         <CardBody>
-          {company.mint && <Row label="Payroll token" value={company.mint} href={explorerUrl("address", company.mint)} />}
+          {company.mint && <Row label="Payout token" value={company.mint} href={explorerUrl("address", company.mint)} />}
           <Row label="Owner wallet" value={account.address} href={explorerUrl("address", account.address)} />
           <Row label="Auditor wallet" value={company.auditorAddress} href={explorerUrl("address", company.auditorAddress)} />
           {company.auditorElgamalPubkey && <Row label="Auditor key" value={company.auditorElgamalPubkey} />}

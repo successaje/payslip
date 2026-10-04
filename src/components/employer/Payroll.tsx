@@ -32,11 +32,11 @@ export function Payroll() {
   return (
     <>
       <PageHeader
-        title="Payroll"
-        description="Each run pays everyone who is set up, in one batch, with amounts encrypted on-chain."
+        title="Payouts"
+        description="Each batch pays everyone who is set up, with amounts encrypted on-chain."
         actions={
           <Button leadingIcon={<Plus size={16} />} onClick={() => setOpen(true)} disabled={Boolean(hasOpen)}>
-            New run
+            New batch
           </Button>
         }
       />
@@ -50,11 +50,11 @@ export function Payroll() {
       ) : runs.data.length === 0 ? (
         <EmptyState
           icon={<Receipt size={18} />}
-          title="No payroll yet"
-          description="Start a run to pay everyone who has finished setup. You will see each payment confirm, and the amounts will not be visible on-chain."
+          title="No payouts yet"
+          description="Start a batch to pay everyone who has finished setup. You will see each payment confirm, and the amounts will not be visible on-chain."
           action={
             <Button leadingIcon={<Plus size={16} />} onClick={() => setOpen(true)}>
-              Start first run
+              Send first batch
             </Button>
           }
         />

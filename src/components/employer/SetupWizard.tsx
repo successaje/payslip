@@ -57,7 +57,7 @@ export function SetupWizard() {
     setSteps([
       { key: "company", label: "Save company", state: "active" },
       { key: "auditor", label: "Derive auditor key", state: "pending", detail: auditorMode === "self" ? "One signature from your wallet" : undefined },
-      { key: "mint", label: "Create payroll token", state: "pending", detail: "One transaction. Pays a small rent deposit." },
+      { key: "mint", label: "Create payout token", state: "pending", detail: "One transaction. Pays a small rent deposit." },
       ...(VAULT_PROGRAM_ID
         ? [{ key: "vault", label: "Open the USDC vault", state: "pending" as const, detail: "One transaction. Backs the token 1:1 with USDC." }]
         : []),
@@ -162,9 +162,9 @@ export function SetupWizard() {
         <AnimatePresence mode="wait">
           {phase === "details" && (
             <motion.div key="details" {...slide}>
-              <h1 className="text-[24px] font-semibold tracking-[-0.01em] text-ink">Name your company</h1>
+              <h1 className="text-[24px] font-semibold tracking-[-0.01em] text-ink">Name your workspace</h1>
               <p className="mt-2 text-[14px] text-ink-3 text-pretty">
-                This is what your team will see on their invite and payslips.
+                This is what recipients will see on their invite and statements. A company, a DAO, a grant program.
               </p>
               <form
                 className="mt-6 flex flex-col gap-4"
@@ -193,9 +193,9 @@ export function SetupWizard() {
 
           {phase === "auditor" && (
             <motion.div key="auditor" {...slide}>
-              <h1 className="text-[24px] font-semibold tracking-[-0.01em] text-ink">Who can audit payroll?</h1>
+              <h1 className="text-[24px] font-semibold tracking-[-0.01em] text-ink">Who can audit payouts?</h1>
               <p className="mt-2 text-[14px] text-ink-3 text-pretty">
-                The auditor can read every salary amount on-chain but cannot move a cent. This is baked into the payroll
+                The auditor can read every payout amount on-chain but cannot move a cent. This is baked into the payout
                 token when it is created and cannot be changed later.
               </p>
               <div className="mt-6 flex flex-col gap-2">
@@ -282,7 +282,7 @@ export function SetupWizard() {
                     void runCreate();
                   }}
                 >
-                  Create payroll token
+                  Create payout token
                 </Button>
               </div>
             </motion.div>
@@ -322,7 +322,7 @@ export function SetupWizard() {
               </div>
               <h1 className="text-[24px] font-semibold tracking-[-0.01em] text-ink">{name} is ready</h1>
               <p className="mt-2 text-[14px] text-ink-3 text-pretty">
-                Your payroll token exists on Solana with the auditor key set. Next, add the people you pay.
+                Your payout token exists on Solana with the auditor key set. Next, add the people you pay.
               </p>
               <a
                 href={explorerUrl("tx", result.signature)}

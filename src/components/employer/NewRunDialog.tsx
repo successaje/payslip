@@ -19,7 +19,7 @@ interface Props {
 
 export function NewRunDialog({ companyId, open, onClose, onCreated }: Props) {
   return (
-    <Dialog open={open} onClose={onClose} title="New payroll run" description="Choose who to include. Only people who finished setup can be paid.">
+    <Dialog open={open} onClose={onClose} title="New payout batch" description="Choose who to include. Only people who finished setup can be paid.">
       <NewRunForm companyId={companyId} onClose={onClose} onCreated={onCreated} />
     </Dialog>
   );
@@ -63,7 +63,7 @@ function NewRunForm({ companyId, onClose, onCreated }: Omit<Props, "open">) {
         }
       }}
     >
-      <Input label="Period" value={period} onChange={(e) => setPeriod(e.target.value)} hint="Shown on everyone's payslip." />
+      <Input label="Period" value={period} onChange={(e) => setPeriod(e.target.value)} hint="Shown on everyone's statement, e.g. a month, an invoice number or a grant tranche." />
 
       <div>
         <p className="mb-1.5 text-[13px] font-medium text-ink">Who to pay</p>
@@ -120,7 +120,7 @@ function NewRunForm({ companyId, onClose, onCreated }: Omit<Props, "open">) {
           Cancel
         </Button>
         <Button type="submit" loading={busy} loadingLabel="Creating…" disabled={selected.size === 0}>
-          Create run
+          Create batch
         </Button>
       </div>
     </form>

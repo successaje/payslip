@@ -20,15 +20,15 @@ import { shortAddress } from "@/lib/format";
 const employerNav: NavItem[] = [
   { href: "/app", label: "Overview", icon: <Home size={17} /> },
   { href: "/app/people", label: "People", icon: <Users size={17} /> },
-  { href: "/app/payroll", label: "Payroll", icon: <Receipt size={17} /> },
+  { href: "/app/payroll", label: "Payouts", icon: <Receipt size={17} /> },
   { href: "/app/treasury", label: "Treasury", icon: <Landmark size={17} /> },
   { href: "/app/audit", label: "Audit", icon: <ShieldCheck size={17} /> },
   { href: "/app/settings", label: "Settings", icon: <Settings size={17} /> },
 ];
 
 const employeeNav: NavItem[] = [
-  { href: "/app/me", label: "My pay", icon: <WalletIcon size={17} /> },
-  { href: "/app/me/payslips", label: "Payslips", icon: <FileText size={17} /> },
+  { href: "/app/me", label: "My payouts", icon: <WalletIcon size={17} /> },
+  { href: "/app/me/payslips", label: "Statements", icon: <FileText size={17} /> },
 ];
 
 const auditorNav: NavItem[] = [{ href: "/app/audit", label: "Audit", icon: <ShieldCheck size={17} /> }];
