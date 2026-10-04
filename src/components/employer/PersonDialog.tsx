@@ -119,7 +119,7 @@ function PersonForm({
           onChange={(e) => setEmail(e.target.value)}
           error={errors.email}
           placeholder="ada@northwind.studio"
-          hint="Only used to label the invite. Payslip does not send email yet."
+          hint="Lets you send the invite from your own mail app with one click."
         />
       </form>
     </>
