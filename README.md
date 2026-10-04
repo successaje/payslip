@@ -6,6 +6,8 @@ only by the employee who received them and the auditor the company designates.
 > Built for Colosseum's Crypto World's Fair (September–October 2026). Not
 > audited. Devnet only until the vault program is deployed and reviewed.
 
+![Payslip demo: landing, run payroll, explorer view, employee decrypt, auditor verify](docs/media/demo.gif)
+
 ## The problem
 
 Remote teams already pay in USDC. The transfer is instant and cheap, and every
