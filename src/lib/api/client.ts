@@ -23,6 +23,8 @@ export interface Me {
   memberships: { employee: Employee; company: { id: string; name: string; mint: string | null } }[];
   /** Companies this wallet is the designated auditor of. */
   audits: { id: string; name: string; mint: string | null; ownerAddress: string }[];
+  /** Self-registrations awaiting the payer's approval. */
+  requests: { id: string; name: string; note: string | null; company: { id: string; name: string } }[];
 }
 
 export interface AuditRow {
@@ -55,6 +57,14 @@ export const api = {
 
   createEmployee: (companyId: string, body: { name: string; email?: string; role?: string; amount: string }) =>
     request<Employee>(`/api/companies/${companyId}/employees`, { method: "POST", body: JSON.stringify(body) }),
+
+  updateClaimLink: (companyId: string, body: { enabled: boolean; label?: string; rotate?: boolean }) =>
+    request<Company>(`/api/companies/${companyId}/claim-link`, { method: "PATCH", body: JSON.stringify(body) }),
+
+  claim: (token: string) => request<{ company: { name: string; mint: string | null; claimLabel: string | null } }>(`/api/claim/${token}`),
+
+  submitClaim: (token: string, body: { name: string; note?: string; configuredSignature: string }) =>
+    request<{ employee: Employee; alreadyRegistered: boolean }>(`/api/claim/${token}`, { method: "POST", body: JSON.stringify(body) }),
 
   updateEmployee: (companyId: string, id: string, body: Partial<Pick<Employee, "name" | "email" | "role" | "amount" | "status">>) =>
     request<Employee>(`/api/companies/${companyId}/employees/${id}`, { method: "PATCH", body: JSON.stringify(body) }),

@@ -44,10 +44,11 @@ import { getSolanaClient } from "./rpc";
 
 const STORAGE_KEY = "payslip.devwallet.secret";
 
-/** Two accounts so an employer and an employee can be played from one browser. */
+/** Three accounts so a payer, a recipient and a self-registering contributor can be played from one browser. */
 const ACCOUNTS: { suffix: string; label: string }[] = [
   { suffix: "", label: "Dev account 1" },
   { suffix: ".2", label: "Dev account 2" },
+  { suffix: ".3", label: "Dev account 3" },
 ];
 
 function loadOrCreateSecret(suffix: string): Uint8Array {

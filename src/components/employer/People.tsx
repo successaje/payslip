@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Link2, Mail, MoreHorizontal, Plus, UserPlus, Users } from "lucide-react";
+import { Check, Link2, Mail, MoreHorizontal, Plus, UserPlus, Users, X } from "lucide-react";
 import { useApp } from "@/components/app/AppContext";
 import { Amount, Badge, Button, Card, EmptyState, PageHeader, SkeletonRows, useToast } from "@/components/ui";
 import { CopyButton } from "@/components/ui/CopyButton";
@@ -12,6 +12,8 @@ import { shortAddress } from "@/lib/format";
 import { sum } from "@/lib/domain/money";
 import { useResource } from "@/hooks/useResource";
 import { PersonDialog } from "./PersonDialog";
+import { PublicLinkCard } from "./PublicLinkCard";
+import { ApproveRequestDialog } from "./ApproveRequestDialog";
 import { RowMenu } from "./RowMenu";
 
 function inviteUrl(token: string) {
@@ -35,26 +37,29 @@ function inviteMailto(p: Employee, company: string, url: string) {
 
 function StatusBadge({ e }: { e: Employee }) {
   if (e.status === "active") return <Badge tone="green" dot>Ready</Badge>;
+  if (e.status === "requested") return <Badge tone="blue" dot pulse>Requested</Badge>;
   return <Badge tone="amber" dot>Invited</Badge>;
 }
 
 export function People() {
-  const { company } = useApp();
+  const { company, refresh } = useApp();
   const { toast } = useToast();
   const [dialog, setDialog] = useState<{ open: boolean; person: Employee | null }>({ open: false, person: null });
+  const [approving, setApproving] = useState<Employee | null>(null);
   const resource = useResource(() => (company ? api.listEmployees(company.id) : Promise.resolve([])), [company?.id]);
   const people = resource.data;
   const error = resource.error;
   const load = resource.reload;
 
+  const requests = useMemo(() => (people ?? []).filter((p) => p.status === "requested"), [people]);
+  const roster = useMemo(() => (people ?? []).filter((p) => p.status !== "requested"), [people]);
   const totals = useMemo(() => {
-    const list = people ?? [];
     return {
-      monthly: sum(list.map((p) => BigInt(p.amount))),
-      ready: list.filter((p) => p.status === "active").length,
-      invited: list.filter((p) => p.status === "invited").length,
+      monthly: sum(roster.filter((p) => p.status === "active").map((p) => BigInt(p.amount))),
+      ready: roster.filter((p) => p.status === "active").length,
+      invited: roster.filter((p) => p.status === "invited").length,
     };
-  }, [people]);
+  }, [roster]);
 
   if (!company) return null;
 
@@ -77,7 +82,7 @@ export function People() {
         title="People"
         description={
           people && people.length
-            ? `${people.length} ${people.length === 1 ? "person" : "people"} · ${totals.ready} ready · ${totals.invited} invited`
+            ? `${roster.length} ${roster.length === 1 ? "person" : "people"} · ${totals.ready} ready · ${totals.invited} invited${requests.length ? ` · ${requests.length} requested` : ""}`
             : "Everyone you pay, and whether they are set up to receive private pay."
         }
         actions={
@@ -87,13 +92,48 @@ export function People() {
         }
       />
 
+      {requests.length > 0 && (
+        <Card className="mb-4 border-blue/30">
+          <div className="flex items-center justify-between px-5 pt-4 pb-2">
+            <h2 className="text-[15px] font-semibold text-ink">Requests</h2>
+            <span className="text-[12.5px] text-ink-3">Registered through your public link. Approve and set an amount, or decline.</span>
+          </div>
+          <ul>
+            {requests.map((p) => (
+              <li key={p.id} className="grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-2 px-5 py-3.5 hairline last:shadow-none">
+                <div className="min-w-0">
+                  <p className="truncate text-[14px] font-medium text-ink">{p.name}</p>
+                  <p className="truncate text-[12.5px] text-ink-3">
+                    {p.note ?? "No note"}
+                    {p.walletAddress && (
+                      <>
+                        {" · "}
+                        <span className="font-mono">{shortAddress(p.walletAddress)}</span>
+                      </>
+                    )}
+                  </p>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <Button size="sm" leadingIcon={<Check size={14} />} onClick={() => setApproving(p)}>
+                    Approve
+                  </Button>
+                  <Button size="sm" variant="ghost" leadingIcon={<X size={14} />} onClick={() => remove(p)}>
+                    Decline
+                  </Button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </Card>
+      )}
+
       {error ? (
         <EmptyState title="Could not load people" description={error} action={<Button variant="secondary" onClick={load}>Try again</Button>} />
       ) : people === null ? (
         <Card className="px-5">
           <SkeletonRows rows={4} />
         </Card>
-      ) : people.length === 0 ? (
+      ) : roster.length === 0 ? (
         <EmptyState
           icon={<Users size={18} />}
           title="No one here yet"
@@ -113,7 +153,7 @@ export function People() {
             <span className="w-24" />
           </div>
           <ul>
-            {people.map((p) => (
+            {roster.map((p) => (
               <li
                 key={p.id}
                 className="grid grid-cols-[1fr_auto] items-center gap-x-4 gap-y-2 px-5 py-3.5 hairline last:shadow-none md:grid-cols-[1.6fr_1fr_1fr_auto]"
@@ -178,6 +218,12 @@ export function People() {
           </div>
         </Card>
       )}
+
+      <div className="mt-4">
+        <PublicLinkCard company={company} onChanged={refresh} />
+      </div>
+
+      <ApproveRequestDialog companyId={company.id} person={approving} onClose={() => setApproving(null)} onApproved={upsert} />
 
       <PersonDialog
         companyId={company.id}

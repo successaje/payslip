@@ -10,7 +10,7 @@ const Patch = z.object({
   email: z.string().trim().email().max(120).optional().or(z.literal("")),
   role: z.string().trim().max(60).optional().or(z.literal("")),
   amount: z.string().trim().min(1).optional(),
-  status: z.enum(["invited", "active", "removed"]).optional(),
+  status: z.enum(["invited", "requested", "active", "removed"]).optional(),
   /** Issue a fresh invite link (invalidates the old one). */
   rotateInvite: z.boolean().optional(),
 });
@@ -40,6 +40,11 @@ export const PATCH = handle(async (req, { params }) => {
   }
   if (d.status) {
     if (d.status === "active" && !existing.walletAddress) throw new ApiError(400, "This person has not connected a wallet yet");
+    if (d.status === "active" && existing.status === "requested") {
+      const amount = BigInt(update.amount ?? existing.amount);
+      if (amount <= 0n) throw new ApiError(400, "Set an amount before approving");
+      update.activatedAt = new Date().toISOString();
+    }
     update.status = d.status;
   }
   if (d.rotateInvite) update.inviteToken = inviteToken();
