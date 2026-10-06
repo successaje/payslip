@@ -10,6 +10,9 @@ payslip_vault = "AjfdhEkypXPzBfxHL4rhX9UNMpzWbD51D56U8XVhcX2L"
 [programs.devnet]
 payslip_vault = "AjfdhEkypXPzBfxHL4rhX9UNMpzWbD51D56U8XVhcX2L"
 
+[programs.mainnet]
+payslip_vault = "AjfdhEkypXPzBfxHL4rhX9UNMpzWbD51D56U8XVhcX2L"
+
 [registry]
 url = "https://api.apr.dev"
 

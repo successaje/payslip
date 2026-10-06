@@ -10,7 +10,13 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "db:push": "dotenv -e .env.local -- drizzle-kit push",
+<<<<<<< HEAD
     "run:minimal": "tsx scripts/minimal-run.ts",
+=======
+    "db:push:mainnet": "dotenv -e .env.mainnet.local -- drizzle-kit push",
+    "dev:mainnet": "dotenv -e .env.mainnet.local -- next dev -p 3201",
+    "preflight:mainnet": "tsx scripts/mainnet-preflight.ts",
+>>>>>>> origin/feat/mainnet-runbook
     "db:studio": "drizzle-kit studio",
     "db:generate": "drizzle-kit generate",
     "postinstall": "node scripts/copy-wasm.mjs"
