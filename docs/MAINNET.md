@@ -18,6 +18,40 @@ in this repository can spend from your wallet on its own.
 Budget 1.6 SOL on the deploy wallet and 0.05 SOL on each wallet that takes
 part. Program rent comes back if you close the program later.
 
+## The cheap path: a real mainnet payout without the vault
+
+If 1.3 SOL of program rent is not on the table, this proves the core claim
+for about 0.01 SOL: a private payout on mainnet, settled in one Transaction
+V1, read back by the recipient and by the auditor. The payout token is a
+fresh Token-2022 mint whose authority is the payer wallet, so it is not
+USDC-backed; that is the only difference from the full run, and the vault
+runbook below is how that gap closes later.
+
+```bash
+RPC_URL=https://<your keyed mainnet rpc> CONFIRM=mainnet npm run run:minimal
+```
+
+What it does, each step signed by the payer keypair at
+`~/.config/solana/id.json` (override with `PAYER=`):
+
+1. Derives the auditor key from the payer, as the app does for "Me, for now".
+2. Creates the mint with the confidential extension and that auditor key.
+3. Configures confidential accounts for the payer and a recipient. The
+   recipient keypair is generated into `scripts/.keys/recipient-mainnet.json`
+   (gitignored, mode 600) unless `RECIPIENT=` points at one. It needs no SOL.
+4. Mints `AMOUNT` (default 1000000, one dollar) to the payer, deposits it to
+   the private balance and applies it.
+5. Sends the payout in a single Transaction V1 and prints bytes, compute
+   units and seconds.
+6. As the recipient: applies the pending balance, decrypts it, and verifies
+   the amount from the proof in the transaction.
+7. As the auditor: decrypts the same transfer from the auditor ciphertext.
+
+It refuses to touch a mainnet RPC without `CONFIRM=mainnet`, refuses to start
+with under 0.03 SOL, and writes a JSON report with every signature to
+`docs/runs/`. The devnet rehearsal on 6 Oct 2026 spent 0.007965 SOL end to
+end (`docs/runs/devnet-2026-10-06-22-54-30.json`), most of it the mint's rent.
+
 ## Before you start
 
 ```bash
