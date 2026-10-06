@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Check, Link2, Mail, MoreHorizontal, Plus, UserPlus, Users, X } from "lucide-react";
+import { Check, FileUp, Link2, Mail, MoreHorizontal, Plus, UserPlus, Users, X } from "lucide-react";
 import { useApp } from "@/components/app/AppContext";
 import { Amount, Badge, Button, Card, EmptyState, PageHeader, SkeletonRows, useToast } from "@/components/ui";
 import { CopyButton } from "@/components/ui/CopyButton";
@@ -12,6 +12,7 @@ import { shortAddress } from "@/lib/format";
 import { sum } from "@/lib/domain/money";
 import { useResource } from "@/hooks/useResource";
 import { PersonDialog } from "./PersonDialog";
+import { ImportDialog } from "./ImportDialog";
 import { PublicLinkCard } from "./PublicLinkCard";
 import { ApproveRequestDialog } from "./ApproveRequestDialog";
 import { RowMenu } from "./RowMenu";
@@ -46,6 +47,7 @@ export function People() {
   const { toast } = useToast();
   const [dialog, setDialog] = useState<{ open: boolean; person: Employee | null }>({ open: false, person: null });
   const [approving, setApproving] = useState<Employee | null>(null);
+  const [importing, setImporting] = useState(false);
   const resource = useResource(() => (company ? api.listEmployees(company.id) : Promise.resolve([])), [company?.id]);
   const people = resource.data;
   const error = resource.error;
@@ -86,9 +88,14 @@ export function People() {
             : "Everyone you pay, and whether they are set up to receive private pay."
         }
         actions={
-          <Button leadingIcon={<Plus size={16} />} onClick={() => setDialog({ open: true, person: null })}>
-            Add person
-          </Button>
+          <>
+            <Button variant="secondary" leadingIcon={<FileUp size={15} />} onClick={() => setImporting(true)}>
+              Import CSV
+            </Button>
+            <Button leadingIcon={<Plus size={16} />} onClick={() => setDialog({ open: true, person: null })}>
+              Add person
+            </Button>
+          </>
         }
       />
 
@@ -139,9 +146,14 @@ export function People() {
           title="No one here yet"
           description="Add the people you pay. Each one gets a private invite link; once they connect a wallet they can be paid."
           action={
-            <Button leadingIcon={<UserPlus size={16} />} onClick={() => setDialog({ open: true, person: null })}>
-              Add your first person
-            </Button>
+            <div className="flex flex-wrap justify-center gap-2">
+              <Button leadingIcon={<UserPlus size={16} />} onClick={() => setDialog({ open: true, person: null })}>
+                Add your first person
+              </Button>
+              <Button variant="secondary" leadingIcon={<FileUp size={15} />} onClick={() => setImporting(true)}>
+                Import CSV
+              </Button>
+            </div>
           }
         />
       ) : (
@@ -241,6 +253,14 @@ export function People() {
             });
           }
         }}
+      />
+      <ImportDialog
+        companyId={company.id}
+        open={importing}
+        onClose={() => setImporting(false)}
+        existing={people ?? []}
+        inviteUrl={inviteUrl}
+        onImported={(created) => resource.mutate((l) => [...l, ...created])}
       />
     </>
   );

@@ -46,6 +46,8 @@ Three views of the same run:
 2. **Invite recipients.** Employees, contractors, grantees, bounty winners. Each
    opens a link, connects a wallet, signs once to derive their keys, and sends
    one transaction to register a confidential account for the workspace's mint.
+   A roster that already lives in a spreadsheet imports from CSV in one go,
+   with every row checked before anything is saved.
    For bounties and grants, where the list is not known upfront, share the
    workspace's public link instead: anyone can register, and each request is
    approved with an amount before it enters a batch.
@@ -165,7 +167,7 @@ Working on devnet end to end: workspace creation, invites, treasury, payout
 batches, recipient decrypt and withdraw, auditor decrypt and CSV export. The vault
 program is deployed on devnet; payouts settle in a single Transaction V1. Next: mainnet run
 with real amounts, fee sponsorship
-for recipient onboarding, local off-ramps and CSV import.
+for recipient onboarding, local off-ramps.
 
 ## License
 

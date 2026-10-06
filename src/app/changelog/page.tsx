@@ -9,6 +9,12 @@ export const metadata: Metadata = {
 const entries: { date: string; title: string; body: string; href?: string }[] = [
   {
     date: "2026-10-06",
+    title: "Import a roster from CSV",
+    body: "Drop or paste a CSV with name, email, role and amount, in any column order, with or without a header. Every row is judged before anything is saved: bad amounts, missing names, repeats and people already on the roster are shown and skipped. Valid rows import in one request and you get the invite links to copy or download.",
+    href: "https://github.com/successaje/payslip/pull/21",
+  },
+  {
+    date: "2026-10-06",
     title: "Recipients can verify each statement against the chain",
     body: "Every confidential transfer carries a proof over a ciphertext with three handles: sender, recipient, auditor. Your statements now open the recipient handle with the key derived from your wallet and compare the result with what the payer entered. Verified on-chain, or the chain's number if they differ. Nothing leaves the browser.",
     href: "https://github.com/successaje/payslip/pull/20",
