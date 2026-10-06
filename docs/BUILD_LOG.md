@@ -18,6 +18,7 @@ Milestones in order. Each line links the pull request that landed it.
 | 2026-10-06 | Public claim link: open registration with payer approval ([#17](https://github.com/successaje/payslip/pull/17)) | Done |
 | 2026-10-06 | Overview checklist and summary from live state ([#18](https://github.com/successaje/payslip/pull/18)) | Done |
 | 2026-10-06 | Recipient home watches the chain for incoming pay ([#19](https://github.com/successaje/payslip/pull/19)) | Done |
+| 2026-10-06 | Recipient-side per-statement decryption and verification ([#20](https://github.com/successaje/payslip/pull/20)) | Done |
 | | Loading, error and empty state pass | In progress |
 | | Responsive pass | |
 | | Mainnet payroll with real amounts | |

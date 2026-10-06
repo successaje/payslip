@@ -9,6 +9,12 @@ export const metadata: Metadata = {
 const entries: { date: string; title: string; body: string; href?: string }[] = [
   {
     date: "2026-10-06",
+    title: "Recipients can verify each statement against the chain",
+    body: "Every confidential transfer carries a proof over a ciphertext with three handles: sender, recipient, auditor. Your statements now open the recipient handle with the key derived from your wallet and compare the result with what the payer entered. Verified on-chain, or the chain's number if they differ. Nothing leaves the browser.",
+    href: "https://github.com/successaje/payslip/pull/20",
+  },
+  {
+    date: "2026-10-06",
     title: "You see pay the moment it lands",
     body: "The recipient home now watches your account on-chain every 20 seconds while the tab is open. When a payout arrives you get a notice with a one-click Confirm receipt, the statement list refreshes and the tab title flags it until you confirm. Nothing is decrypted or sent anywhere; the watcher only reads a public counter.",
     href: "https://github.com/successaje/payslip/pull/19",
