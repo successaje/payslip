@@ -100,6 +100,16 @@ works".
    account for the workspace's payout token.
 5. "You're set up. Payouts will appear here."
 
+### Open registration (bounties, grants)
+
+When the payer does not know the recipients upfront, they turn on the
+workspace's public link `/claim/<token>` from People, optionally labelled
+("Q4 documentation bounties"). Anyone can open it, connect a wallet, register
+a confidential account and send a request with their name and what it is for.
+Requests appear at the top of People; the payer approves each one with an
+amount, or declines it. Nothing is sent until approval. The link can be
+rotated or turned off at any time without affecting people already approved.
+
 ### Primary action: send a batch
 
 1. Review the roster: who gets paid, how much, who is not yet set up (skipped).

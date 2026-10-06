@@ -145,7 +145,7 @@ function RegisterStep({
         maxLength={200}
       />
       <p className="text-[13px] text-ink-3 text-pretty">
-        Your wallet will ask for one signature to derive your private keys and one transaction to register your account.
+        Your wallet will ask for one signature to derive your private keys and one transaction to register your account.{" "}
         {companyName} then approves you and sets the amount. You will see it the moment it lands.
       </p>
       <Button type="submit" size="lg" block trailingIcon={<ArrowRight size={16} />}>
