@@ -49,6 +49,7 @@ const ACCOUNTS: { suffix: string; label: string }[] = [
   { suffix: "", label: "Dev account 1" },
   { suffix: ".2", label: "Dev account 2" },
   { suffix: ".3", label: "Dev account 3" },
+  { suffix: ".4", label: "Dev account 4" },
 ];
 
 function loadOrCreateSecret(suffix: string): Uint8Array {

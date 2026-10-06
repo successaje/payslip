@@ -89,7 +89,11 @@ works".
    extension and the auditor key, mint authority held by the vault PDA, the
    vault's USDC account opened, the payer's own confidential account prepared.
    Staged progress; one signature and three transactions.
-6. Land on the overview with a clear next step: add people.
+6. Land on the overview. Until the first payout it is a checklist: add
+   people, fund the treasury, send a batch. Each step is ticked from real
+   state (active recipients, vault balance, completed runs), never from a
+   flag. Afterwards it shows people ready, batch total, vault backing, the
+   last batch and the recent batches.
 
 ### Recipient onboarding
 
