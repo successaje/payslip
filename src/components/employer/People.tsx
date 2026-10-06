@@ -191,7 +191,7 @@ export function People() {
                 <div className="order-4 flex items-center justify-end gap-1 md:order-none md:w-24">
                   {p.status === "invited" && (
                     <CopyButton value={inviteUrl(p.inviteToken)} size="sm" variant="ghost" className="hidden sm:inline-flex">
-                      <span className="sr-only sm:not-sr-only">Invite link</span>
+                      <span className="sr-only whitespace-nowrap sm:not-sr-only">Invite link</span>
                     </CopyButton>
                   )}
                   <RowMenu

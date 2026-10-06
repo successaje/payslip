@@ -4,15 +4,19 @@ Judges watch the pitch video first (2–3 min), then the demo (≤3 min). Both
 are recorded against devnet with the dev wallet so every transaction is real
 and linkable.
 
-## 30-second version
+## 30-second version (this is `docs/media/demo.gif`, recorded 6 Oct 2026 on devnet)
 
-1. Batch page, payer view: four people (a salary, an invoice, a grant tranche,
-   a bounty), four amounts, "Send payouts".
-2. Rows tick from "Generating proofs" to "Paid" with explorer links.
-3. Toggle "What the explorer sees": every amount becomes `••••••`.
-4. Switch to Ada's phone: "Pay arrived", confirm, `$2,350.00`.
-5. Auditor page: "Decrypt all transfers", four amounts recovered from chain,
-   "Books match the chain".
+1. Landing hero: one batch seen as Ada, as anyone, as the auditor.
+2. Overview with live stats, then People: a roster of salaries, bounties and
+   grants, two of them imported from CSV.
+3. New batch, "Send payouts". Rows go "Generating proofs" to "Paid" in one
+   Transaction V1 each, about five seconds for the batch.
+4. "What the explorer sees": every amount becomes `••••••`. Then the chain
+   receipt: three proofs and the transfer, 238k CU, no amount anywhere.
+5. Ada's home: "Pay arrived" the moment it lands, confirm, `$4,701.00`.
+   Statements: each payout "Verified on-chain" with her own key.
+6. Audit: "Decrypt all transfers", `$5,450.00` on-chain equals `$5,450.00`
+   recorded, "Books match the chain".
 
 Line to say over it: *Fourteen payouts. No amounts. Each person sees their
 own. The accountant sees everything. Nobody can move a cent they shouldn't.*
