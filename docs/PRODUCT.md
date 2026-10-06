@@ -103,6 +103,11 @@ works".
 4. One signature derives keys; one transaction registers the confidential
    account for the workspace's payout token.
 5. "You're set up. Payouts will appear here."
+6. From then on the home page watches the account on-chain while the tab is
+   open (every 20 s, paused when hidden). An incoming transfer raises the
+   account's pending-credit counter; the page shows "Pay arrived" with a
+   one-click confirm, refreshes statements and flags the tab title. Only a
+   public counter is read, never the amount.
 
 ### Open registration (bounties, grants)
 
