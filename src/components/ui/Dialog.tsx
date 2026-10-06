@@ -66,7 +66,7 @@ export function Dialog({ open, onClose, title, description, children, footer, lo
             aria-modal="true"
             aria-labelledby="dialog-title"
             className={cn(
-              "relative w-full rounded-t-[var(--radius-xl)] bg-paper-raised shadow-[var(--shadow-lg)] sm:rounded-[var(--radius-xl)]",
+              "relative flex max-h-[calc(100dvh-2rem)] w-full flex-col rounded-t-[var(--radius-xl)] bg-paper-raised shadow-[var(--shadow-lg)] sm:rounded-[var(--radius-xl)]",
               sizes[size],
             )}
             initial={{ opacity: 0, y: 24, scale: 0.98 }}
@@ -74,7 +74,7 @@ export function Dialog({ open, onClose, title, description, children, footer, lo
             exit={{ opacity: 0, y: 12, scale: 0.98 }}
             transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div className="flex items-start justify-between gap-4 px-5 pt-5">
+            <div className="flex shrink-0 items-start justify-between gap-4 px-5 pt-5">
               <div className="min-w-0">
                 <h2 id="dialog-title" className="text-[16px] font-semibold text-ink">
                   {title}
@@ -92,8 +92,8 @@ export function Dialog({ open, onClose, title, description, children, footer, lo
                 </button>
               )}
             </div>
-            <div className="px-5 py-4">{children}</div>
-            {footer && <div className="flex items-center justify-end gap-2 border-t border-line px-5 py-3">{footer}</div>}
+            <div className="min-h-0 flex-1 overflow-y-auto px-5 py-4">{children}</div>
+            {footer && <div className="flex shrink-0 items-center justify-end gap-2 border-t border-line px-5 py-3">{footer}</div>}
           </motion.div>
         </div>
       )}

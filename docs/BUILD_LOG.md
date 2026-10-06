@@ -19,6 +19,7 @@ Milestones in order. Each line links the pull request that landed it.
 | 2026-10-06 | Overview checklist and summary from live state ([#18](https://github.com/successaje/payslip/pull/18)) | Done |
 | 2026-10-06 | Recipient home watches the chain for incoming pay ([#19](https://github.com/successaje/payslip/pull/19)) | Done |
 | 2026-10-06 | Recipient-side per-statement decryption and verification ([#20](https://github.com/successaje/payslip/pull/20)) | Done |
+| 2026-10-06 | CSV roster import with row-by-row preview and invite-link export ([#21](https://github.com/successaje/payslip/pull/21)) | Done |
 | | Loading, error and empty state pass | In progress |
 | | Responsive pass | |
 | | Mainnet payroll with real amounts | |

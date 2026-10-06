@@ -58,6 +58,9 @@ export const api = {
   createEmployee: (companyId: string, body: { name: string; email?: string; role?: string; amount: string }) =>
     request<Employee>(`/api/companies/${companyId}/employees`, { method: "POST", body: JSON.stringify(body) }),
 
+  importEmployees: (companyId: string, rows: { name: string; email?: string; role?: string; amount: string }[]) =>
+    request<Employee[]>(`/api/companies/${companyId}/employees/import`, { method: "POST", body: JSON.stringify({ rows }) }),
+
   updateClaimLink: (companyId: string, body: { enabled: boolean; label?: string; rotate?: boolean }) =>
     request<Company>(`/api/companies/${companyId}/claim-link`, { method: "PATCH", body: JSON.stringify(body) }),
 

@@ -38,7 +38,8 @@ Secondary users:
 
 **Send a batch.** Keep a roster, press one button, everyone is paid privately.
 
-Everything else exists to make that action possible (setup, funding, invites)
+Everything else exists to make that action possible (setup, funding, invites,
+CSV import for rosters that already live in a spreadsheet)
 or to make its result useful (recipient balance, auditor report, history).
 
 ## Product loop
