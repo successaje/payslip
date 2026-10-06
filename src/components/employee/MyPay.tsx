@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { address as toAddress } from "@solana/kit";
 import { ArrowRight, ArrowUpFromLine, Download, ExternalLink, Lock, RefreshCw } from "lucide-react";
 import { useApp } from "@/components/app/AppContext";
 import { Amount, Badge, Button, Card, CardBody, CardHeader, Dialog, EmptyState, Input, PageHeader, Skeleton, useToast } from "@/components/ui";
 import { useResource } from "@/hooks/useResource";
+import { usePolling } from "@/hooks/usePolling";
+import { LiveStatus } from "./LiveStatus";
 import { api } from "@/lib/api/client";
 import { readHolderState } from "@/lib/solana/accounts";
 import { applyPending, decryptAvailableBalance, withdrawToPublic } from "@/lib/solana/confidential";
@@ -15,6 +17,9 @@ import { VaultCard } from "@/components/employer/VaultCard";
 import { parseUsd } from "@/lib/domain/money";
 import { describeError } from "@/lib/errors";
 import { formatDate, shortAddress } from "@/lib/format";
+
+/** How often the recipient home re-reads the chain for incoming pay while visible. */
+const POLL_MS = 20_000;
 
 /**
  * Employee home. Balance is decrypted locally with the wallet's keys;
@@ -37,6 +42,78 @@ export function MyPay({ full = false }: { full?: boolean }) {
   const [withdrawOpen, setWithdrawOpen] = useState(false);
   const [withdrawAmount, setWithdrawAmount] = useState("");
 
+  // Watch the chain for incoming pay. The pending-credit counter on the
+  // confidential account rises once per transfer received, so a rise between
+  // two reads means money arrived. The first read only sets the baseline.
+  const seenCredits = useRef<bigint | null>(null);
+  const confirmRef = useRef<() => Promise<void>>(async () => {});
+  const live = usePolling(
+    async () => {
+      if (!mint) return;
+      const next = await readHolderState(client, toAddress(account.address), mint);
+      const prev = seenCredits.current;
+      seenCredits.current = next.pendingCredits;
+      holder.mutate(() => next);
+      if (prev !== null && next.pendingCredits > prev) {
+        const count = Number(next.pendingCredits - prev);
+        toast({
+          tone: "success",
+          title: count === 1 ? "Pay arrived" : `${count} payouts arrived`,
+          description: `${membership?.company.name ?? "Your payer"} just paid you. Confirm receipt to add it to your balance.`,
+          duration: 0,
+          action: { label: "Confirm receipt", onClick: () => void confirmRef.current() },
+        });
+        void payslips.reload();
+      }
+    },
+    { intervalMs: POLL_MS, enabled: Boolean(mint) && holder.status === "ready" },
+  );
+
+  // Flag the tab while pay is waiting so a recipient on another tab notices.
+  const pendingNow = holder.data?.pendingCredits ?? 0n;
+  useEffect(() => {
+    if (pendingNow <= 0n) return;
+    const original = document.title;
+    document.title = `(1) Pay arrived · Payslip`;
+    return () => {
+      document.title = original;
+    };
+  }, [pendingNow]);
+
+  const reveal = async () => {
+    if (!mint) return;
+    setBusy("reveal");
+    try {
+      setBalance(await decryptAvailableBalance(client, signer, mint));
+    } catch (e) {
+      const d = describeError(e);
+      if (!d.cancelled) toast({ tone: "error", title: "Could not decrypt balance", description: d.message });
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  const confirmIncoming = async () => {
+    if (!mint) return;
+    setBusy("apply");
+    try {
+      await applyPending(client, signer, mint);
+      toast({ tone: "success", title: "Pay received", description: "Your balance is updated." });
+      await holder.reload();
+      await live.checkNow();
+      await reveal();
+    } catch (e) {
+      const d = describeError(e);
+      if (!d.cancelled) toast({ tone: "error", title: "Could not confirm", description: d.message });
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  useEffect(() => {
+    confirmRef.current = confirmIncoming;
+  });
+
   if (!membership || !mint) {
     const pending = me.requests[0];
     return (
@@ -50,33 +127,6 @@ export function MyPay({ full = false }: { full?: boolean }) {
       />
     );
   }
-
-  const reveal = async () => {
-    setBusy("reveal");
-    try {
-      setBalance(await decryptAvailableBalance(client, signer, mint));
-    } catch (e) {
-      const d = describeError(e);
-      if (!d.cancelled) toast({ tone: "error", title: "Could not decrypt balance", description: d.message });
-    } finally {
-      setBusy(null);
-    }
-  };
-
-  const confirmIncoming = async () => {
-    setBusy("apply");
-    try {
-      await applyPending(client, signer, mint);
-      toast({ tone: "success", title: "Pay received", description: "Your balance is updated." });
-      await holder.reload();
-      await reveal();
-    } catch (e) {
-      const d = describeError(e);
-      if (!d.cancelled) toast({ tone: "error", title: "Could not confirm", description: d.message });
-    } finally {
-      setBusy(null);
-    }
-  };
 
   const withdraw = async () => {
     let base: bigint;
@@ -112,9 +162,12 @@ export function MyPay({ full = false }: { full?: boolean }) {
         title={full ? "Statements" : "My payouts"}
         description={full ? `Everything ${membership.company.name} has paid you.` : `From ${membership.company.name}. Only you can read these numbers.`}
         actions={
-          <Button variant="secondary" leadingIcon={<RefreshCw size={14} />} onClick={() => Promise.all([holder.reload(), payslips.reload()])}>
-            Refresh
-          </Button>
+          <>
+            <LiveStatus state={live} />
+            <Button variant="secondary" leadingIcon={<RefreshCw size={14} />} onClick={() => Promise.all([live.checkNow(), payslips.reload()])}>
+              Refresh
+            </Button>
+          </>
         }
       />
 
