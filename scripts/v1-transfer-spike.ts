@@ -1,5 +1,5 @@
 /**
- * Reproducible spike (run with `npx tsx scripts/v1-transfer-spike.ts`, env MINT, DEST, AUDITOR, AMOUNT):
+ * Reproducible spike (run with `npx tsx scripts/v1-transfer-spike.ts`, env MINT, DEST, AUDITOR, AMOUNT, optional SENDER_KEYPAIR path):
  * a full confidential transfer in ONE Transaction V1 (4,096 bytes).
  * Three inline proof verifications + the transfer instruction, no context
  * state accounts, no cleanup.
@@ -78,7 +78,7 @@ function subLoHi(left: Uint8Array, lo: Uint8Array, hi: Uint8Array) {
 async function main() {
   const { rpc, rpcSubscriptions } = makeRpc("https://api.devnet.solana.com", "wss://api.devnet.solana.com");
   const payer = await createKeyPairSignerFromBytes(
-    new Uint8Array(JSON.parse(fs.readFileSync(process.env.HOME + "/.config/solana/id.json", "utf8"))),
+    new Uint8Array(JSON.parse(fs.readFileSync(process.env.SENDER_KEYPAIR ?? process.env.HOME + "/.config/solana/id.json", "utf8"))),
   );
   const mint = address(process.env.MINT!);
   const destOwner = address(process.env.DEST!);

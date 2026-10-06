@@ -9,6 +9,12 @@ export const metadata: Metadata = {
 const entries: { date: string; title: string; body: string; href?: string }[] = [
   {
     date: "2026-10-06",
+    title: "You see pay the moment it lands",
+    body: "The recipient home now watches your account on-chain every 20 seconds while the tab is open. When a payout arrives you get a notice with a one-click Confirm receipt, the statement list refreshes and the tab title flags it until you confirm. Nothing is decrypted or sent anywhere; the watcher only reads a public counter.",
+    href: "https://github.com/successaje/payslip/pull/19",
+  },
+  {
+    date: "2026-10-06",
     title: "Overview that tells you what to do next",
     body: "The workspace home is now a three-step checklist until the first payout goes out: add people, fund the treasury, send a batch. Each step reads its state from the database and the chain, so a step is only ticked when it is actually done. After that it becomes a summary with the recent batches.",
     href: "https://github.com/successaje/payslip/pull/18",
