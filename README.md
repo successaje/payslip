@@ -141,6 +141,10 @@ invariant, and why the client is hand-written rather than IDL-generated.
 
 ## Deployment
 
+For the first real payout on mainnet, follow [docs/MAINNET.md](docs/MAINNET.md):
+costs, a read-only preflight (`npm run preflight:mainnet`), the program deploy,
+and the run itself. Every value-moving step is signed by a person.
+
 The app targets Vercel with Turso (libsql) as the database. Set every variable
 from `.env.example` in the project settings; do not set
 `NEXT_PUBLIC_ENABLE_DEV_WALLET` in production.
