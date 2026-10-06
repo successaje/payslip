@@ -68,6 +68,7 @@ See [docs/PRODUCT.md](docs/PRODUCT.md) for the product model,
 | Token-2022 `ConfidentialTransferMint` with auditor ElGamal key, auto-approve | [`src/lib/solana/mint.ts`](src/lib/solana/mint.ts) |
 | Confidential configure, deposit, apply, transfer, withdraw (ZK proofs in WASM, in the browser) | [`src/lib/solana/confidential.ts`](src/lib/solana/confidential.ts) |
 | Auditor key derivation and per-transfer decryption from a signature | [`src/lib/solana/confidential.ts`](src/lib/solana/confidential.ts), [`src/components/auditor/Audit.tsx`](src/components/auditor/Audit.tsx) |
+| Confidential transfer in one Transaction V1 (three inline proof verifications + transfer, ~2.4 KB) with multi-transaction fallback | [`src/lib/solana/confidentialV1.ts`](src/lib/solana/confidentialV1.ts), spike in [`scripts/v1-transfer-spike.ts`](scripts/v1-transfer-spike.ts) |
 | Browser batch runner with persisted per-stage progress | [`src/lib/payroll/runner.ts`](src/lib/payroll/runner.ts) |
 | `payslip_vault` program: USDC wrap/unwrap, vault PDA as mint authority | [`program/`](program/), client in [`src/lib/solana/vault.ts`](src/lib/solana/vault.ts) |
 | Wallet-standard signing through `@solana/kit` with cached key-derivation signature | [`src/lib/solana/signers.ts`](src/lib/solana/signers.ts) |
@@ -159,8 +160,8 @@ docs                 product model, architecture, design system, build log
 
 Working on devnet end to end: workspace creation, invites, treasury, payout
 batches, recipient decrypt and withdraw, auditor decrypt and CSV export. The vault
-program is compiled and wired; deployment is next. After that: mainnet run
-with real amounts, Transaction V1 single-transaction transfers, fee sponsorship
+program is deployed on devnet; payouts settle in a single Transaction V1. Next: mainnet run
+with real amounts, fee sponsorship
 for recipient onboarding, per-transfer recipient decryption for statements,
 local off-ramps, and a public "pay a bounty privately" link for DAOs and grant
 programs.

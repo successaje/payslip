@@ -200,6 +200,10 @@ export function BuiltOn() {
       body: "Range and validity proofs run in WASM on the sender's machine. The server never sees a key, a secret, or a decrypted amount.",
     },
     {
+      title: "One transaction per payout, on Transaction V1",
+      body: "Confidential transfers used to take five transactions. Solana's 4,096-byte transactions, live since September 2026, let Payslip verify all three proofs inline and transfer in one atomic transaction: about 2.4 KB, under a second.",
+    },
+    {
       title: "USDC vault, no admin",
       body: "A small program wraps USDC into the payout token and back. Supply equals vault balance, always. No one can mint or withdraw outside those two instructions.",
     },

@@ -77,7 +77,7 @@ export default function SecurityPage() {
         <li>The explorer still shows sender, recipient and timing. Payslip hides amounts, not relationships.</li>
         <li>Statements show the amount the payer recorded; the balance is what the chain proves. Per-transfer recipient decryption is on the roadmap.</li>
         <li>The confidential extension caps a single transfer at 2^48 base units, about $281 million.</li>
-        <li>Transfers take several transactions today. Transaction V1 makes a single atomic transaction possible; we have not migrated yet.</li>
+        <li>Payouts use Transaction V1 (one atomic transaction). Some block explorers do not render version-1 transactions yet; the in-app receipt reads them directly from RPC.</li>
       </ul>
 
       <h2>Reporting a problem</h2>
