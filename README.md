@@ -165,8 +165,7 @@ Working on devnet end to end: workspace creation, invites, treasury, payout
 batches, recipient decrypt and withdraw, auditor decrypt and CSV export. The vault
 program is deployed on devnet; payouts settle in a single Transaction V1. Next: mainnet run
 with real amounts, fee sponsorship
-for recipient onboarding, per-transfer recipient decryption for statements and
-local off-ramps.
+for recipient onboarding, local off-ramps and CSV import.
 
 ## License
 

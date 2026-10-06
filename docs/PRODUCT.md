@@ -108,6 +108,11 @@ works".
    account's pending-credit counter; the page shows "Pay arrived" with a
    one-click confirm, refreshes statements and flags the tab title. Only a
    public counter is read, never the amount.
+7. Statements can be verified: each row decrypts the recipient handle of the
+   transfer's validity proof with the wallet-derived key and compares it with
+   the recorded amount. "Verified on-chain" when equal, the chain's figure in
+   red when not. Works for Transaction V1 (proof inline) and for older
+   multi-transaction transfers (proof in a companion transaction).
 
 ### Open registration (bounties, grants)
 

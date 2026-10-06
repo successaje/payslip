@@ -3,9 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { address as toAddress } from "@solana/kit";
-import { ArrowRight, ArrowUpFromLine, Download, ExternalLink, Lock, RefreshCw } from "lucide-react";
+import { ArrowRight, ArrowUpFromLine, Download, ExternalLink, Lock, RefreshCw, ShieldCheck } from "lucide-react";
+import { signature as toSignature } from "@solana/kit";
+import { recipientTransferAmountAnyVersion } from "@/lib/solana/confidentialV1";
+import { cn } from "@/lib/cn";
 import { useApp } from "@/components/app/AppContext";
 import { Amount, Badge, Button, Card, CardBody, CardHeader, Dialog, EmptyState, Input, PageHeader, Skeleton, useToast } from "@/components/ui";
+
+type Verified = { amount: bigint } | { error: string };
 import { useResource } from "@/hooks/useResource";
 import { usePolling } from "@/hooks/usePolling";
 import { LiveStatus } from "./LiveStatus";
@@ -38,9 +43,11 @@ export function MyPay({ full = false }: { full?: boolean }) {
   );
 
   const [balance, setBalance] = useState<bigint | null>(null);
-  const [busy, setBusy] = useState<"reveal" | "apply" | "withdraw" | null>(null);
+  const [busy, setBusy] = useState<"reveal" | "apply" | "withdraw" | "verify" | null>(null);
   const [withdrawOpen, setWithdrawOpen] = useState(false);
   const [withdrawAmount, setWithdrawAmount] = useState("");
+  const [verified, setVerified] = useState<Record<string, Verified>>({});
+  const [verifying, setVerifying] = useState<Set<string>>(new Set());
 
   // Watch the chain for incoming pay. The pending-credit counter on the
   // confidential account rises once per transfer received, so a rise between
@@ -114,6 +121,42 @@ export function MyPay({ full = false }: { full?: boolean }) {
     confirmRef.current = confirmIncoming;
   });
 
+  /** Decrypt what the chain says one payout carried, with this wallet's key. */
+  const verifyOne = async (p: { id: string; signature: string | null; signatures: string | null }) => {
+    if (!p.signature) return;
+    setVerifying((v) => new Set(v).add(p.id));
+    try {
+      const extra = p.signatures ? (JSON.parse(p.signatures) as string[]).map((s) => toSignature(s)) : [];
+      const r = await recipientTransferAmountAnyVersion(client, signer, toSignature(p.signature), extra);
+      setVerified((d) => ({ ...d, [p.id]: { amount: r.amount } }));
+    } catch (e) {
+      const d = describeError(e);
+      if (d.cancelled) throw e;
+      setVerified((prev) => ({ ...prev, [p.id]: { error: d.message } }));
+    } finally {
+      setVerifying((v) => {
+        const n = new Set(v);
+        n.delete(p.id);
+        return n;
+      });
+    }
+  };
+
+  const verifyAll = async (items: { id: string; signature: string | null; signatures: string | null }[]) => {
+    const todo = items.filter((p) => p.signature && !verified[p.id]);
+    if (todo.length === 0) return;
+    setBusy("verify");
+    try {
+      for (const p of todo) await verifyOne(p);
+      toast({ tone: "success", title: "Checked against the chain", description: `${todo.length} ${todo.length === 1 ? "payout" : "payouts"} decrypted with your key. Nothing left your browser.` });
+    } catch (e) {
+      const d = describeError(e);
+      if (!d.cancelled) toast({ tone: "error", title: "Could not verify", description: d.message });
+    } finally {
+      setBusy(null);
+    }
+  };
+
   if (!membership || !mint) {
     const pending = me.requests[0];
     return (
@@ -164,6 +207,11 @@ export function MyPay({ full = false }: { full?: boolean }) {
         actions={
           <>
             <LiveStatus state={live} />
+            {full && list.some((p) => p.signature && !verified[p.id]) && (
+              <Button leadingIcon={<ShieldCheck size={14} />} loading={busy === "verify"} loadingLabel="Decrypting…" onClick={() => verifyAll(list)}>
+                Verify all on-chain
+              </Button>
+            )}
             <Button variant="secondary" leadingIcon={<RefreshCw size={14} />} onClick={() => Promise.all([live.checkNow(), payslips.reload()])}>
               Refresh
             </Button>
@@ -234,7 +282,10 @@ export function MyPay({ full = false }: { full?: boolean }) {
             {list.map((p) => (
               <li key={p.id} className="grid grid-cols-[1fr_auto] items-center gap-4 px-5 py-3.5 hairline last:shadow-none">
                 <div className="min-w-0">
-                  <p className="text-[14px] font-medium text-ink">{p.period}</p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="text-[14px] font-medium text-ink">{p.period}</p>
+                    <VerifiedBadge state={verified[p.id]} recorded={BigInt(p.amount)} />
+                  </div>
                   <p className="text-[12.5px] text-ink-3">
                     {p.paidAt ? formatDate(p.paidAt) : ""}
                     {p.signature && (
@@ -247,12 +298,34 @@ export function MyPay({ full = false }: { full?: boolean }) {
                     )}
                   </p>
                 </div>
-                <Amount value={p.amount} />
+                <div className="flex items-center gap-3">
+                  <Amount value={p.amount} />
+                  {p.signature && !verified[p.id] && (
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      leadingIcon={<ShieldCheck size={13} />}
+                      loading={verifying.has(p.id)}
+                      loadingLabel="Decrypting…"
+                      onClick={() => verifyOne(p).catch(() => undefined)}
+                      className={cn(full ? "" : "hidden sm:inline-flex")}
+                    >
+                      Verify
+                    </Button>
+                  )}
+                </div>
               </li>
             ))}
           </ul>
         )}
       </Card>
+
+      {full && (
+        <p className="mt-3 text-[12.5px] text-ink-3 text-pretty">
+          Verify decrypts the amount the chain recorded for you, using the key derived from your wallet. It is compared with what{" "}
+          {membership.company.name} entered. Nothing is sent anywhere.
+        </p>
+      )}
 
       <Dialog
         open={withdrawOpen}
@@ -284,5 +357,28 @@ export function MyPay({ full = false }: { full?: boolean }) {
         />
       </Dialog>
     </>
+  );
+}
+
+function VerifiedBadge({ state, recorded }: { state: Verified | undefined; recorded: bigint }) {
+  if (!state) return null;
+  if ("error" in state) {
+    return (
+      <span title={state.error}>
+        <Badge tone="amber">Could not verify</Badge>
+      </span>
+    );
+  }
+  if (state.amount === recorded) {
+    return (
+      <Badge tone="green" dot>
+        Verified on-chain
+      </Badge>
+    );
+  }
+  return (
+    <Badge tone="red" dot>
+      Chain says <Amount value={state.amount} size="sm" className="text-red" />
+    </Badge>
   );
 }

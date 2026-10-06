@@ -256,3 +256,93 @@ export async function auditTransferAmountAnyVersion(client: SolanaClient, audito
   }
   throw new Error("No confidential transfer in this transaction");
 }
+
+const ZK_PROGRAM = "ZkE1Gama1Proof11111111111111111111111111111";
+const VERIFY_BATCHED_GROUPED_3_HANDLES_VALIDITY = 12;
+/** Context layout: 3 pubkeys (32 each) then grouped lo and hi (commitment + 3 handles, 128 each). */
+const VALIDITY_CONTEXT_BYTES = 96 + 128 + 128;
+
+interface RawInstruction {
+  program: string;
+  data: Uint8Array;
+}
+
+/** Top-level instructions of a transaction of any version, with program ids resolved. */
+async function fetchInstructions(client: SolanaClient, signature: Signature): Promise<RawInstruction[]> {
+  const { getBase58Encoder } = await import("@solana/kit");
+  const result = await client.rpc
+    .getTransaction(signature, { commitment: "confirmed", encoding: "json", maxSupportedTransactionVersion: 1 as never })
+    .send();
+  if (!result) throw new Error("Transaction not found");
+  const message = result.transaction.message as { accountKeys?: readonly string[]; staticAccountKeys?: readonly string[]; instructions: readonly { programIdIndex: number; data: string }[] };
+  const keys = (message.accountKeys ?? message.staticAccountKeys ?? []) as string[];
+  const base58 = getBase58Encoder();
+  return message.instructions.map((ix) => ({ program: keys[ix.programIdIndex], data: new Uint8Array(base58.encode(ix.data as never)) }));
+}
+
+export interface RecipientDecryption {
+  /** What the chain says was sent to this wallet, base units. */
+  amount: bigint;
+  /** The transaction that carried the validity proof (same as the transfer for Transaction V1). */
+  proofSignature: Signature;
+}
+
+/**
+ * The recipient reads what they were actually paid, from the chain alone.
+ *
+ * Every confidential transfer carries a validity proof over a grouped
+ * ciphertext with three decryption handles: sender, recipient, auditor. The
+ * recipient's ElGamal key (derived from one wallet signature, like the
+ * sender's) opens the second handle. The proof lives in the same Transaction
+ * V1 as the transfer; for older multi-transaction transfers it is in one of
+ * the companion transactions, which `signatures` lists.
+ *
+ * Two checks tie the proof to this transfer: the proof's second pubkey must
+ * be the recipient's, and the grouped commitment must equal the commitment in
+ * the transfer instruction's auditor ciphertext.
+ */
+export async function recipientTransferAmountAnyVersion(
+  client: SolanaClient,
+  recipient: MessagePartialSigner,
+  signature: Signature,
+  signatures: Signature[] = [],
+): Promise<RecipientDecryption> {
+  await initZk();
+  const zk = await import("@solana/zk-sdk/web");
+  const { deriveConfidentialKeys } = await import("@softseco/confidential-transfers");
+  const { getConfidentialTransferInstructionDataDecoder } = await import("@solana-program/token-2022");
+
+  const { elgamalKeypair } = await deriveConfidentialKeys({ signer: recipient });
+  const myPub = new Uint8Array(elgamalKeypair.pubkey().toBytes());
+  const secret = elgamalKeypair.secret();
+  const same = (a: Uint8Array, b: Uint8Array) => a.length === b.length && a.every((v, i) => v === b[i]);
+
+  const transferIxs = await fetchInstructions(client, signature);
+  const transfer = transferIxs.find(
+    (ix) => ix.program === TOKEN_2022_PROGRAM_ADDRESS && ix.data[0] === CONFIDENTIAL_TRANSFER_DISCRIMINATOR && ix.data[1] === CONFIDENTIAL_TRANSFER_INNER_DISCRIMINATOR,
+  );
+  if (!transfer) throw new Error("No confidential transfer in this transaction");
+  const decoded = getConfidentialTransferInstructionDataDecoder().decode(transfer.data);
+  const auditorLoCommitment = new Uint8Array(decoded.transferAmountAuditorCiphertextLo).slice(0, 32);
+
+  const candidates = [signature, ...signatures.filter((s) => s !== signature)];
+  let sawProof = false;
+  for (const sig of candidates) {
+    const ixs = sig === signature ? transferIxs : await fetchInstructions(client, sig);
+    for (const ix of ixs) {
+      if (ix.program !== ZK_PROGRAM || ix.data[0] !== VERIFY_BATCHED_GROUPED_3_HANDLES_VALIDITY || ix.data.length < 1 + VALIDITY_CONTEXT_BYTES) continue;
+      sawProof = true;
+      const ctx = ix.data.slice(1, 1 + VALIDITY_CONTEXT_BYTES);
+      const secondPubkey = ctx.slice(32, 64);
+      const groupedLo = ctx.slice(96, 224);
+      const groupedHi = ctx.slice(224, 352);
+      if (!same(groupedLo.slice(0, 32), auditorLoCommitment)) continue; // a proof for some other transfer
+      if (!same(secondPubkey, myPub)) throw new Error("This transfer was not encrypted to your key");
+      const lo = zk.ElGamalCiphertext.fromBytes(extract(groupedLo, 1));
+      const hi = zk.ElGamalCiphertext.fromBytes(extract(groupedHi, 1));
+      if (!lo || !hi) throw new Error("Could not parse the recipient ciphertext");
+      return { amount: secret.decrypt(lo) + (secret.decrypt(hi) << LO_BITS), proofSignature: sig };
+    }
+  }
+  throw new Error(sawProof ? "The proof on-chain does not match this transfer" : "Could not find the validity proof for this transfer on-chain");
+}
