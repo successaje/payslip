@@ -23,12 +23,17 @@ export const companies = sqliteTable(
     auditorElgamalPubkey: text("auditor_elgamal_pubkey"),
     /** Signature of the mint-creation transaction. */
     mintSignature: text("mint_signature"),
+    /** Public self-registration link token. Null until the payer enables it. */
+    claimToken: text("claim_token"),
+    /** What the public link says it is for, e.g. "Q4 documentation bounties". */
+    claimLabel: text("claim_label"),
     createdAt: text("created_at").notNull().default(now),
   },
-  (t) => [index("companies_owner_idx").on(t.ownerAddress)],
+  (t) => [index("companies_owner_idx").on(t.ownerAddress), uniqueIndex("companies_claim_idx").on(t.claimToken)],
 );
 
-export const employeeStatus = ["invited", "active", "removed"] as const;
+/** `requested`: self-registered through the public link, awaiting approval and an amount. */
+export const employeeStatus = ["invited", "requested", "active", "removed"] as const;
 export type EmployeeStatus = (typeof employeeStatus)[number];
 
 export const employees = sqliteTable(
@@ -41,7 +46,9 @@ export const employees = sqliteTable(
     name: text("name").notNull(),
     email: text("email"),
     role: text("role"),
-    /** Monthly salary in base units. */
+    /** Free text from a self-registered recipient, e.g. a bounty or invoice reference. */
+    note: text("note"),
+    /** Amount per batch in base units. "0" until an approved request gets one. */
     amount: text("amount").notNull(),
     walletAddress: text("wallet_address"),
     inviteToken: text("invite_token").notNull(),

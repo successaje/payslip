@@ -70,7 +70,12 @@ export async function describeMe(address: string) {
     .from(employees)
     .innerJoin(companies, eq(employees.companyId, companies.id))
     .where(and(eq(employees.walletAddress, address), eq(employees.status, "active")));
-  return { address, companies: owned, memberships, audits };
+  const requests = await db
+    .select({ id: employees.id, name: employees.name, note: employees.note, company: { id: companies.id, name: companies.name } })
+    .from(employees)
+    .innerJoin(companies, eq(employees.companyId, companies.id))
+    .where(and(eq(employees.walletAddress, address), eq(employees.status, "requested")));
+  return { address, companies: owned, memberships, audits, requests };
 }
 
 export type Me = Awaited<ReturnType<typeof describeMe>>;

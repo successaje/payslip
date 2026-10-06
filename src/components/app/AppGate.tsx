@@ -87,7 +87,8 @@ function Authenticated({ account, signOut, children }: { account: UiWalletAccoun
   const isEmployer = Boolean(company);
   const isEmployee = (me?.memberships.length ?? 0) > 0;
   const isAuditor = (me?.audits.length ?? 0) > 0;
-  const needsSetup = me !== null && !isEmployer && !isEmployee && !isAuditor;
+  const hasRequest = (me?.requests.length ?? 0) > 0;
+  const needsSetup = me !== null && !isEmployer && !isEmployee && !isAuditor && !hasRequest;
   const onSetup = pathname.startsWith("/app/setup");
   const onEmployeeArea = pathname.startsWith("/app/me");
   const onAuditArea = pathname.startsWith("/app/audit");
@@ -96,9 +97,9 @@ function Authenticated({ account, signOut, children }: { account: UiWalletAccoun
     if (!me) return;
     if (needsSetup && !onSetup) router.replace("/app/setup");
     else if (!needsSetup && onSetup) router.replace(isEmployer ? "/app" : isEmployee ? "/app/me" : "/app/audit");
-    else if (!isEmployer && isEmployee && !onEmployeeArea && !(isAuditor && onAuditArea)) router.replace("/app/me");
+    else if (!isEmployer && (isEmployee || hasRequest) && !onEmployeeArea && !(isAuditor && onAuditArea)) router.replace("/app/me");
     else if (!isEmployer && !isEmployee && isAuditor && !onAuditArea) router.replace("/app/audit");
-  }, [me, needsSetup, onSetup, isEmployer, isEmployee, isAuditor, onEmployeeArea, onAuditArea, router]);
+  }, [me, needsSetup, onSetup, isEmployer, isEmployee, isAuditor, hasRequest, onEmployeeArea, onAuditArea, router]);
 
   if (state.status === "error") {
     return (
@@ -128,8 +129,8 @@ function Authenticated({ account, signOut, children }: { account: UiWalletAccoun
     return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
   }
 
-  const nav = isEmployer && !onEmployeeArea ? employerNav : isEmployee ? [...employeeNav, ...(isAuditor ? auditorNav : [])] : auditorNav;
-  const context = isEmployer && !onEmployeeArea ? company?.name : isEmployee ? me.memberships[0]?.company.name : me.audits[0]?.name;
+  const nav = isEmployer && !onEmployeeArea ? employerNav : isEmployee || hasRequest ? [...employeeNav, ...(isAuditor ? auditorNav : [])] : auditorNav;
+  const context = isEmployer && !onEmployeeArea ? company?.name : isEmployee ? me.memberships[0]?.company.name : hasRequest ? me.requests[0]?.company.name : me.audits[0]?.name;
 
   return (
     <AppContext.Provider value={value}>

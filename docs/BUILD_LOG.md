@@ -14,6 +14,8 @@ Milestones in order. Each line links the pull request that landed it.
 | 2026-10-03 | Auditor view decrypting transfers from chain ([#7](https://github.com/successaje/payslip/pull/7)) | Done |
 | 2026-10-03 | Landing page; `payslip_vault` program written and compiled; app wired for wrap/unwrap | Done |
 | 2026-10-03 | Deploy vault program to devnet (`AjfdhEkypXPzBfxHL4rhX9UNMpzWbD51D56U8XVhcX2L`); setup creates mints with the vault PDA as authority; wrap verified | Done |
+| 2026-10-06 | Payouts settle in one Transaction V1 with inline proofs; in-app receipt ([#16](https://github.com/successaje/payslip/pull/16)) | Done |
+| 2026-10-06 | Public claim link: open registration with payer approval ([#17](https://github.com/successaje/payslip/pull/17)) | Done |
 | | Loading, error and empty state pass | In progress |
 | | Responsive pass | |
 | | Mainnet payroll with real amounts | |

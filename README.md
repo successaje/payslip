@@ -46,6 +46,9 @@ Three views of the same run:
 2. **Invite recipients.** Employees, contractors, grantees, bounty winners. Each
    opens a link, connects a wallet, signs once to derive their keys, and sends
    one transaction to register a confidential account for the workspace's mint.
+   For bounties and grants, where the list is not known upfront, share the
+   workspace's public link instead: anyone can register, and each request is
+   approved with an amount before it enters a batch.
 3. **Fund the treasury.** Wrap USDC into the payout token through the vault
    (1:1, no admin), then move it to the private balance.
 4. **Send a batch.** Proofs are generated in the payer's browser. Each transfer
@@ -162,9 +165,8 @@ Working on devnet end to end: workspace creation, invites, treasury, payout
 batches, recipient decrypt and withdraw, auditor decrypt and CSV export. The vault
 program is deployed on devnet; payouts settle in a single Transaction V1. Next: mainnet run
 with real amounts, fee sponsorship
-for recipient onboarding, per-transfer recipient decryption for statements,
-local off-ramps, and a public "pay a bounty privately" link for DAOs and grant
-programs.
+for recipient onboarding, per-transfer recipient decryption for statements and
+local off-ramps.
 
 ## License
 

@@ -38,10 +38,15 @@ export function MyPay({ full = false }: { full?: boolean }) {
   const [withdrawAmount, setWithdrawAmount] = useState("");
 
   if (!membership || !mint) {
+    const pending = me.requests[0];
     return (
       <EmptyState
-        title="You are not on anyone's payroll yet"
-        description="When a company invites you, open their link and your pay will show up here."
+        title={pending ? `Waiting for ${pending.company.name} to approve you` : "You are not on anyone's payout list yet"}
+        description={
+          pending
+            ? "You are registered. Once they approve your request and set an amount, your payouts will appear here and only you can read them."
+            : "When a workspace invites you or shares its public link, register your wallet and your payouts will show up here."
+        }
       />
     );
   }

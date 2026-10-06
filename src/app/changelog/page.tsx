@@ -9,6 +9,12 @@ export const metadata: Metadata = {
 const entries: { date: string; title: string; body: string; href?: string }[] = [
   {
     date: "2026-10-06",
+    title: "Public link for bounties and grants",
+    body: "A workspace can now share one link that anyone can open to register a wallet. Each request lands in People, where the payer approves it and sets the amount before anything is sent. Built for bounty boards, grant programs and open contributor work where the recipient list is not known upfront.",
+    href: "https://github.com/successaje/payslip/pull/17",
+  },
+  {
+    date: "2026-10-06",
     title: "One transaction per payout",
     body: "Confidential transfers now settle in a single Transaction V1: three proofs verified inline, then the transfer, about 2.4 KB and under a second on devnet. The in-app receipt reads any transaction version straight from RPC.",
   },
