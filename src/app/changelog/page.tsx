@@ -9,6 +9,12 @@ export const metadata: Metadata = {
 const entries: { date: string; title: string; body: string; href?: string }[] = [
   {
     date: "2026-10-06",
+    title: "Overview that tells you what to do next",
+    body: "The workspace home is now a three-step checklist until the first payout goes out: add people, fund the treasury, send a batch. Each step reads its state from the database and the chain, so a step is only ticked when it is actually done. After that it becomes a summary with the recent batches.",
+    href: "https://github.com/successaje/payslip/pull/18",
+  },
+  {
+    date: "2026-10-06",
     title: "Public link for bounties and grants",
     body: "A workspace can now share one link that anyone can open to register a wallet. Each request lands in People, where the payer approves it and sets the amount before anything is sent. Built for bounty boards, grant programs and open contributor work where the recipient list is not known upfront.",
     href: "https://github.com/successaje/payslip/pull/17",
