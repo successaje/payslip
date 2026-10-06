@@ -13,10 +13,10 @@ import type { PaymentStatus } from "@/lib/db/schema";
 import { paymentsToAttempt } from "@/lib/domain/payroll";
 import { runPayroll, type RunnerEvent, type RunnerPayment } from "@/lib/payroll/runner";
 import { decryptAvailableBalance } from "@/lib/solana/confidential";
-import { explorerUrl } from "@/lib/solana/config";
 import { formatDateTime, shortAddress } from "@/lib/format";
 import { cn } from "@/lib/cn";
 import { runTone } from "./Payroll";
+import { TransactionReceipt } from "./TransactionReceipt";
 
 const paymentTone: Record<PaymentStatus, { tone: Tone; label: string }> = {
   pending: { tone: "neutral", label: "Waiting" },
@@ -39,6 +39,7 @@ export function RunDetail({ runId }: { runId: string }) {
   const [live, setLive] = useState<Record<string, Partial<Row>>>({});
   const [running, setRunning] = useState(false);
   const [publicView, setPublicView] = useState(false);
+  const [receipt, setReceipt] = useState<string | null>(null);
   const [treasury, setTreasury] = useState<{ status: "idle" | "checking" | "ok" | "short" | "error"; available?: bigint; message?: string }>({ status: "idle" });
   const stopRef = useRef(false);
 
@@ -249,14 +250,13 @@ export function RunDetail({ runId }: { runId: string }) {
                 </div>
                 <div className="order-4 text-right md:order-none md:w-28">
                   {r.signature ? (
-                    <a
-                      href={explorerUrl("tx", r.signature)}
-                      target="_blank"
-                      rel="noreferrer"
+                    <button
+                      type="button"
+                      onClick={() => setReceipt(r.signature)}
                       className="inline-flex items-center gap-1 font-mono text-[12px] text-ink-2 underline decoration-line underline-offset-4 hover:text-ink"
                     >
                       {shortAddress(r.signature, 4)} <ExternalLink size={11} />
-                    </a>
+                    </button>
                   ) : (
                     <span className="text-[12px] text-ink-4">—</span>
                   )}
@@ -270,6 +270,8 @@ export function RunDetail({ runId }: { runId: string }) {
           <Amount value={run.total} hidden={publicView} className="text-ink-2" />
         </div>
       </Card>
+
+      <TransactionReceipt signature={receipt} open={receipt !== null} onClose={() => setReceipt(null)} />
 
       {done && (
         <Card className="mt-4">

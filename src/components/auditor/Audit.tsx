@@ -7,7 +7,7 @@ import { useApp } from "@/components/app/AppContext";
 import { Amount, Badge, Button, Card, CardBody, CardHeader, EmptyState, PageHeader, SkeletonRows, useToast } from "@/components/ui";
 import { useResource } from "@/hooks/useResource";
 import { api, type AuditRow } from "@/lib/api/client";
-import { auditTransferAmount } from "@/lib/solana/confidential";
+import { auditTransferAmountAnyVersion } from "@/lib/solana/confidentialV1";
 import { explorerUrl } from "@/lib/solana/config";
 import { formatUsd, sum } from "@/lib/domain/money";
 import { describeError } from "@/lib/errors";
@@ -46,7 +46,7 @@ export function Audit({ companyId }: { companyId: string }) {
     try {
       for (const [i, r] of rows.entries()) {
         try {
-          const amount = await auditTransferAmount(client, signer, toSignature(r.signature));
+          const amount = await auditTransferAmountAnyVersion(client, signer, toSignature(r.signature));
           setDecrypted((d) => ({ ...d, [r.paymentId]: { amount } }));
         } catch (e) {
           const d = describeError(e);

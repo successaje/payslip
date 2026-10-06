@@ -14,6 +14,7 @@ import { api } from "@/lib/api/client";
 import type { Payment, PaymentStatus } from "@/lib/db/schema";
 import { paymentsToAttempt } from "@/lib/domain/payroll";
 import { confidentialTransfer } from "@/lib/solana/confidential";
+import { confidentialTransferV1 } from "@/lib/solana/confidentialV1";
 import type { SolanaClient } from "@/lib/solana/rpc";
 import type { WalletSigner } from "@/lib/solana/signers";
 import { describeError } from "@/lib/errors";
@@ -80,16 +81,27 @@ export async function runPayroll(input: RunnerInput): Promise<RunnerResult> {
     }
     try {
       await report(p, "preparing", { detail: "Generating proofs" });
-      const result = await confidentialTransfer(
-        client,
-        signer,
-        mint,
-        toAddress(p.employee.walletAddress),
-        BigInt(p.amount),
-        auditorElgamalPubkey,
-      );
+      let signature: string;
+      let signatures: string[];
+      let detail = "Paid";
+      try {
+        // One atomic Transaction V1: three inline proof verifications and the transfer.
+        const v1 = await confidentialTransferV1(client, signer, mint, toAddress(p.employee.walletAddress), BigInt(p.amount), auditorElgamalPubkey);
+        signature = v1.signature;
+        signatures = [v1.signature];
+        detail = `Paid in one transaction (${(v1.bytes / 1024).toFixed(1)} KB)`;
+      } catch (e) {
+        const d = describeError(e);
+        if (d.cancelled) throw e;
+        // Fall back to the multi-transaction path (proof context accounts).
+        console.warn("V1 transfer failed, falling back to multi-transaction transfer", d.detail);
+        await report(p, "preparing", { detail: "Retrying with standard transactions" });
+        const result = await confidentialTransfer(client, signer, mint, toAddress(p.employee.walletAddress), BigInt(p.amount), auditorElgamalPubkey);
+        signature = result.signature;
+        signatures = result.signatures;
+      }
       paid++;
-      await report(p, "paid", { signature: result.signature, signatures: result.signatures, detail: "Paid" });
+      await report(p, "paid", { signature, signatures, detail });
     } catch (e) {
       failed++;
       const d = describeError(e);

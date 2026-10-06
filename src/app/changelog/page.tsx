@@ -8,6 +8,11 @@ export const metadata: Metadata = {
 
 const entries: { date: string; title: string; body: string; href?: string }[] = [
   {
+    date: "2026-10-06",
+    title: "One transaction per payout",
+    body: "Confidential transfers now settle in a single Transaction V1: three proofs verified inline, then the transfer, about 2.4 KB and under a second on devnet. The in-app receipt reads any transaction version straight from RPC.",
+  },
+  {
     date: "2026-10-04",
     title: "Repositioned around private payouts",
     body: "Salaries, invoices, grants and bounties in one batch. Landing, app copy and docs rewritten; demo GIF recorded on devnet.",
