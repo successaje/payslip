@@ -36,6 +36,10 @@ yarn-error.log*
 # vercel
 .vercel
 
+# Private submission workspace and generated local wallet keys
+/.submission/
+/scripts/.keys/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

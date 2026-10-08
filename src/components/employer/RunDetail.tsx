@@ -39,7 +39,7 @@ export function RunDetail({ runId }: { runId: string }) {
   const [live, setLive] = useState<Record<string, Partial<Row>>>({});
   const [running, setRunning] = useState(false);
   const [publicView, setPublicView] = useState(false);
-  const [receipt, setReceipt] = useState<string | null>(null);
+  const [receipt, setReceipt] = useState<Row | null>(null);
   const [treasury, setTreasury] = useState<{ status: "idle" | "checking" | "ok" | "short" | "error"; available?: bigint; message?: string }>({ status: "idle" });
   const stopRef = useRef(false);
 
@@ -252,7 +252,7 @@ export function RunDetail({ runId }: { runId: string }) {
                   {r.signature ? (
                     <button
                       type="button"
-                      onClick={() => setReceipt(r.signature)}
+                      onClick={() => setReceipt(r)}
                       className="inline-flex items-center gap-1 font-mono text-[12px] text-ink-2 underline decoration-line underline-offset-4 hover:text-ink"
                     >
                       {shortAddress(r.signature, 4)} <ExternalLink size={11} />
@@ -271,7 +271,13 @@ export function RunDetail({ runId }: { runId: string }) {
         </div>
       </Card>
 
-      <TransactionReceipt signature={receipt} open={receipt !== null} onClose={() => setReceipt(null)} />
+      <TransactionReceipt
+        signature={receipt?.signature ?? null}
+        recipient={receipt?.employee.name}
+        amount={receipt?.amount}
+        open={receipt !== null}
+        onClose={() => setReceipt(null)}
+      />
 
       {done && (
         <Card className="mt-4">

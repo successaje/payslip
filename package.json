@@ -12,6 +12,7 @@
     "db:push": "dotenv -e .env.local -- drizzle-kit push",
     "db:studio": "drizzle-kit studio",
     "db:generate": "drizzle-kit generate",
+    "brand:render": "node scripts/brand-render.mjs",
     "postinstall": "node scripts/copy-wasm.mjs"
   },
   "dependencies": {

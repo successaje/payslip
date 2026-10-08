@@ -109,7 +109,7 @@ npm run dev                  # http://localhost:3200
 ### Developer wallet (devnet)
 
 Set `NEXT_PUBLIC_ENABLE_DEV_WALLET=true` in `.env.local` to register a
-devnet-only wallet-standard wallet with two accounts, so payer and recipient
+devnet-only wallet-standard wallet with four accounts, so payer, recipients and auditor
 flows can be exercised in one browser without an extension. It is never
 registered on mainnet. Fund its accounts with devnet SOL (the address is shown
 in the account menu).
