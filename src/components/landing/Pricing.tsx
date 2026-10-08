@@ -18,14 +18,14 @@ const tiers = [
     unit: "per recipient per batch",
     note: "After audit",
     lines: ["Real USDC through the vault", "Auditor access and CSV export", "Email support, no custody, ever"],
-    cta: { label: "Join the waitlist", href: "mailto:hello@payslip.so?subject=Payslip%20mainnet%20waitlist" },
+    cta: { label: "Read the security plan", href: "/security" },
   },
   {
     name: "Programs",
     price: "Talk to us",
     note: "DAOs and grant programs",
     lines: ["Public 'pay a bounty privately' links", "Multiple auditors", "Dedicated onboarding"],
-    cta: { label: "Get in touch", href: "mailto:hello@payslip.so?subject=Payslip%20for%20programs" },
+    cta: { label: "See what is shipping", href: "/changelog" },
   },
 ];
 

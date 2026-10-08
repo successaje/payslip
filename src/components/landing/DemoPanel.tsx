@@ -44,7 +44,7 @@ export function DemoPanel() {
     <div className="rounded-[var(--radius-xl)] border border-line bg-paper-raised shadow-[var(--shadow-lg)]">
       <div className="flex flex-col gap-3 border-b border-line px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2">
-          <span className="text-[12px] font-medium uppercase tracking-[0.08em] text-ink-3">October payouts · seen by</span>
+          <span className="text-[12px] font-medium uppercase tracking-[0.08em] text-ink-3">One payout batch · seen by</span>
         </div>
         <div className="flex gap-1 rounded-[var(--radius-md)] bg-paper-inset p-1">
           {views.map((v) => (

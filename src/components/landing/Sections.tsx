@@ -32,7 +32,7 @@ export function Hero() {
             </Button>
           </a>
         </div>
-        <p className="mt-5 text-[13px] text-ink-3">Open source · Token-2022 confidential balances · Devnet today</p>
+        <p className="mt-5 text-[13px] text-ink-3">Token-2022 confidential balances · Real devnet transactions</p>
       </div>
       <Reveal delay={0.1}>
         <DemoPanel />
@@ -235,7 +235,7 @@ export function Closing() {
     <section className="border-t border-line">
       <div className={`${container} flex flex-col items-start gap-6 py-16 md:flex-row md:items-center md:justify-between md:py-20`}>
         <div>
-          <h2 className="font-serif text-[32px] leading-[1.1] text-ink text-balance md:text-[40px]">Fourteen payouts. No amounts.</h2>
+          <h2 className="font-serif text-[32px] leading-[1.1] text-ink text-balance md:text-[40px]">One batch. No public amounts.</h2>
           <p className="mt-3 max-w-[44ch] text-[15px] text-ink-2 text-pretty">
             Set up a workspace, invite someone, and send a private payout on devnet in under five minutes.
           </p>
@@ -271,8 +271,8 @@ export function Footer() {
           <Link href="/auditor-key" className="hover:text-ink">
             Auditor key
           </Link>
-          <a href="mailto:hello@payslip.so" className="hover:text-ink">
-            Contact
+          <a href="https://github.com/successaje" target="_blank" rel="noreferrer" className="hover:text-ink">
+            Builder
           </a>
           <span className="inline-flex items-center gap-1">
             <Eye size={12} /> Not audited. Devnet only for now.

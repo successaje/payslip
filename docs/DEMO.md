@@ -18,7 +18,7 @@ and linkable.
 6. Audit: "Decrypt all transfers", `$5,450.00` on-chain equals `$5,450.00`
    recorded, "Books match the chain".
 
-Line to say over it: *Fourteen payouts. No amounts. Each person sees their
+Line to say over it: *One batch. No public amounts. Each person sees their
 own. The accountant sees everything. Nobody can move a cent they shouldn't.*
 
 ## 2-minute demo (recorded)
@@ -34,7 +34,7 @@ own. The accountant sees everything. Nobody can move a cent they shouldn't.*
 | 1:30 | Explorer toggle, then Solscan for one signature | This is all anyone else gets. |
 | 1:40 | Ada confirms receipt, decrypts `$2,350.00` | |
 | 1:50 | Audit page, decrypt all, CSV export | The auditor key reads everything and spends nothing. |
-| 2:00 | GitHub README | Open source. Built on Token-2022 confidential balances, live on mainnet since June. |
+| 2:00 | GitHub README | Built on Token-2022 confidential balances, live on mainnet since June. Every demo transaction is independently verifiable on devnet. |
 
 ## Pitch video (2–3 min, face to camera + slides)
 

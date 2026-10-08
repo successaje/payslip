@@ -75,15 +75,15 @@ export default function SecurityPage() {
       <ul>
         <li>Not independently audited: neither the program nor the app. Devnet only until that changes.</li>
         <li>The explorer still shows sender, recipient and timing. Payslip hides amounts, not relationships.</li>
-        <li>Statements show the amount the payer recorded; the balance is what the chain proves. Per-transfer recipient decryption is on the roadmap.</li>
+        <li>Each recipient can decrypt and verify the amount carried by an individual transfer from its on-chain proof. This happens locally with their wallet-derived key.</li>
         <li>The confidential extension caps a single transfer at 2^48 base units, about $281 million.</li>
         <li>Payouts use Transaction V1 (one atomic transaction). Some block explorers do not render version-1 transactions yet; the in-app receipt reads them directly from RPC.</li>
       </ul>
 
       <h2>Reporting a problem</h2>
       <p>
-        Open an issue or email <a href="mailto:security@payslip.so">security@payslip.so</a>. Please do not test against
-        other people&apos;s workspaces.
+        During the devnet beta, report issues privately to the <a href="https://github.com/successaje">repository owner</a>.
+        Please do not test against other people&apos;s workspaces.
       </p>
     </SitePage>
   );
