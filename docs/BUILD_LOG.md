@@ -21,6 +21,8 @@ Milestones in order. Each line links the pull request that landed it.
 | 2026-10-06 | Recipient-side per-statement decryption and verification ([#20](https://github.com/successaje/payslip/pull/20)) | Done |
 | 2026-10-06 | CSV roster import with row-by-row preview and invite-link export ([#21](https://github.com/successaje/payslip/pull/21)) | Done |
 | 2026-10-06 | Demo GIF re-recorded on devnet with the payouts wording, Transaction V1 batch, pay-arrived, statement verification and audit ([#22](https://github.com/successaje/payslip/pull/22)) | Done |
+| 2026-10-06 | Mainnet runbook and read-only preflight ([#23](https://github.com/successaje/payslip/pull/23)) | Done |
+| 2026-10-06 | Minimal private payout from the CLI, no vault, 0.008 SOL end to end; rehearsed on devnet, ready for mainnet ([#24](https://github.com/successaje/payslip/pull/24)) | Done |
 | | Loading, error and empty state pass | In progress |
 | | Responsive pass | |
 | | Mainnet payroll with real amounts | |

@@ -48,3 +48,6 @@ public/zk/
 program/target/
 program/node_modules/
 program/.anchor/
+
+# local keypairs used by scripts
+scripts/.keys/
