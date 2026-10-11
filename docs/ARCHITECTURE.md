@@ -87,7 +87,7 @@ the employer wallet is the authority and Treasury offers a labelled
 | Configure account | Each holder, once | 1 (plus 1 signature for key derivation) |
 | Deposit public → pending | Employer after wrapping | 1 |
 | Apply pending → available | Holder | 1 |
-| Transfer | Employer | 5 today (3 proof contexts, transfer, close); 1 under Transaction V1 once the client library supports it |
+| Transfer | Employer | 1 (Transaction V1: three inline proof verifications and the transfer, atomic); the five-transaction context-state path remains as a fallback |
 | Withdraw available → public | Holder | 2 |
 
 Keys are derived with the standard derivation (one signature over

@@ -6,7 +6,7 @@ on-chain. Readable only by the person who received them and the auditor the
 payer designates.
 
 > Built for Colosseum's Crypto World's Fair (September–October 2026). Not
-> audited. Devnet only until the vault program is deployed and reviewed.
+> audited. Devnet only until the vault program has been independently reviewed and deployed to mainnet.
 
 ![Payslip demo: landing with the three views of one batch, overview, people, a batch settling in single transactions, the explorer view, the chain receipt, the recipient's pay arriving and verifying, the auditor matching the books](docs/media/demo.gif)
 

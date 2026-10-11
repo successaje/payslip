@@ -24,7 +24,7 @@ const Body = z.object({
 export const POST = handle(async (req, { params }) => {
   const { id } = await params;
   const { company } = await requireOwnedCompany(id);
-  if (!company.mint) throw new ApiError(400, "Finish company setup before running payroll");
+  if (!company.mint) throw new ApiError(400, "Finish workspace setup before sending a batch");
   const parsed = Body.safeParse(await req.json().catch(() => null));
   if (!parsed.success) throw new ApiError(400, parsed.error.issues[0]?.message ?? "Invalid request");
 

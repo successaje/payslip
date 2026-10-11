@@ -175,7 +175,7 @@ export function ClaimFlow({ token }: { token: string }) {
         {info.status === "error" ? (
           <div>
             <h1 className="text-[24px] font-semibold tracking-[-0.01em] text-ink">This link is not active</h1>
-            <p className="mt-2 text-[14px] text-ink-3">{info.error}. Ask whoever shared it for a current one.</p>
+            <p className="mt-2 text-[14px] text-ink-3">Ask whoever shared it for a current one.</p>
           </div>
         ) : !company ? (
           <div>

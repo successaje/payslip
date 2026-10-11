@@ -179,7 +179,7 @@ export function Treasury() {
         <Card className="mt-4 border-dashed">
           <CardHeader
             title="Add test funds"
-            description="Devnet only, and only while no vault program is configured. Your wallet is the mint authority, so it can create test payroll dollars."
+            description="Devnet only, and only while no vault program is configured. Your wallet is the mint authority, so it can create test payout dollars."
             action={<Badge tone="amber">Devnet</Badge>}
           />
           <CardBody>

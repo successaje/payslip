@@ -89,7 +89,7 @@ export function AuditorKeyTool() {
       <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-4 py-10">
         <h1 className="text-[24px] font-semibold tracking-[-0.01em] text-ink">Auditor key</h1>
         <p className="mt-2 text-[14px] text-ink-3 text-pretty">
-          A company has asked you to be the auditor of its payroll. Connect the wallet you will audit with and generate
+          A company has asked you to be the auditor of its payouts. Connect the wallet you will audit with and generate
           your key.
         </p>
         <div className="mt-6">{account ? <Generator account={account} /> : <ConnectButton size="lg" />}</div>
