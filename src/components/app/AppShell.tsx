@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Menu, X, Moon, Sun } from "lucide-react";
 import { cn } from "@/lib/cn";
@@ -58,7 +58,16 @@ export function AppShell({ nav, context, children, onSignOut }: AppShellProps) {
   const [open, setOpen] = useState(false);
   const { theme, toggle } = useTheme();
 
-  const isActive = (href: string) => (href === "/app" ? pathname === href : pathname.startsWith(href));
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
+
+  const isActive = (href: string) => pathname === href || (href !== "/app" && href !== "/app/me" && pathname.startsWith(`${href}/`));
 
   const sidebar = (onNavigate?: () => void) => (
     <nav className="flex flex-1 flex-col gap-0.5">

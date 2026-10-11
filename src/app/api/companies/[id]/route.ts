@@ -27,7 +27,7 @@ export const PATCH = handle(async (req, { params }) => {
   const data = parsed.data;
 
   if (data.mint) {
-    if (company.mint && company.mint !== data.mint) throw new ApiError(409, "This company already has a payroll token");
+    if (company.mint && company.mint !== data.mint) throw new ApiError(409, "This workspace already has a payout token");
     try {
       toAddress(data.mint);
       if (data.auditorElgamalPubkey) toAddress(data.auditorElgamalPubkey);

@@ -55,7 +55,7 @@ own. The accountant sees everything. Nobody can move a cent they shouldn't.*
    agencies in Nigeria, India, Brazil, Vietnam. Every payer onboards every
    recipient; every contractor carries the expectation to their next client.
 6. **What is next (20s).** Mainnet with an issuer-enabled stablecoin,
-   Transaction V1 single-transaction transfers, fee sponsorship, local
+   fee sponsorship, local
    off-ramps. Ask: pilots with two agencies.
 
 ## Weekly update video (1 min)

@@ -92,7 +92,7 @@ export function Audit({ companyId }: { companyId: string }) {
         description={
           data.data
             ? isAuditor
-              ? `You hold the auditor key for ${data.data.company.name}. You can read every salary; you cannot move a cent.`
+              ? `You hold the auditor key for ${data.data.company.name}. You can read every amount; you cannot move a cent.`
               : `${shortAddress(data.data.company.auditorAddress, 6)} holds the auditor key for ${data.data.company.name}.`
             : undefined
         }
@@ -151,7 +151,7 @@ export function Audit({ companyId }: { companyId: string }) {
           <SkeletonRows rows={3} />
         </Card>
       ) : rows.length === 0 ? (
-        <EmptyState icon={<ShieldCheck size={18} />} title="Nothing to audit yet" description="Once payroll has run, every transfer will be listed here with its signature." />
+        <EmptyState icon={<ShieldCheck size={18} />} title="Nothing to audit yet" description="Once a batch has been sent, every transfer will be listed here with its signature." />
       ) : (
         <Card>
           <div className="hidden grid-cols-[1.4fr_1fr_1fr_1fr_auto] gap-4 px-5 py-3 text-[12px] font-medium uppercase tracking-[0.06em] text-ink-3 md:grid hairline">

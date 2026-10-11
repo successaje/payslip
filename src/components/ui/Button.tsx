@@ -39,6 +39,11 @@ const sizes: Record<ButtonSize, string> = {
   lg: "h-12 px-5 text-[15px] rounded-[var(--radius-md)]",
 };
 
+/** The class list a button renders with, shared with ButtonLink. */
+export function buttonClass({ variant = "primary", size = "md", block, className }: { variant?: ButtonVariant; size?: ButtonSize; block?: boolean; className?: string }) {
+  return cn(base, variants[variant], sizes[size], block && "w-full", className);
+}
+
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   {
     variant = "primary",

@@ -1,4 +1,5 @@
-export { Button, type ButtonProps } from "./Button";
+export { Button, buttonClass, type ButtonProps } from "./Button";
+export { ButtonLink } from "./ButtonLink";
 export { Input, Textarea, FieldShell, inputClass } from "./Field";
 export { Card, CardHeader, CardBody, CardFooter } from "./Card";
 export { Badge, type Tone } from "./Badge";

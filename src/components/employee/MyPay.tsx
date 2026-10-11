@@ -275,7 +275,7 @@ export function MyPay({ full = false }: { full?: boolean }) {
           </CardBody>
         ) : list.length === 0 ? (
           <CardBody>
-            <p className="text-[13.5px] text-ink-3">Nothing yet. When {membership.company.name} runs payroll, it shows up here.</p>
+            <p className="text-[13.5px] text-ink-3">Nothing yet. When {membership.company.name} sends a batch, it shows up here.</p>
           </CardBody>
         ) : (
           <ul>

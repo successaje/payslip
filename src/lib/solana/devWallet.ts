@@ -44,7 +44,7 @@ import { getSolanaClient } from "./rpc";
 
 const STORAGE_KEY = "payslip.devwallet.secret";
 
-/** Three accounts so a payer, a recipient and a self-registering contributor can be played from one browser. */
+/** Four accounts so a payer, a recipient and a self-registering contributor can be played from one browser. */
 const ACCOUNTS: { suffix: string; label: string }[] = [
   { suffix: "", label: "Dev account 1" },
   { suffix: ".2", label: "Dev account 2" },

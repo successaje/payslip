@@ -1,6 +1,5 @@
-import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
-import { Button } from "@/components/ui";
+import { ButtonLink } from "@/components/ui";
 import { Reveal } from "./Reveal";
 
 const tiers = [
@@ -57,11 +56,9 @@ export function Pricing() {
                 ))}
               </ul>
               <div className="mt-auto pt-6">
-                <Link href={t.cta.href}>
-                  <Button variant={t.primary ? "primary" : "secondary"} block trailingIcon={<ArrowRight size={15} />}>
-                    {t.cta.label}
-                  </Button>
-                </Link>
+                <ButtonLink href={t.cta.href} variant={t.primary ? "primary" : "secondary"} block trailingIcon={<ArrowRight size={15} />}>
+                  {t.cta.label}
+                </ButtonLink>
               </div>
             </div>
           </Reveal>
