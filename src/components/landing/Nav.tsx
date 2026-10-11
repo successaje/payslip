@@ -5,7 +5,7 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "motion/react";
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { Wordmark } from "@/components/brand/Wordmark";
-import { Button } from "@/components/ui";
+import { Button, ButtonLink } from "@/components/ui";
 import { useTheme } from "@/components/theme/useTheme";
 
 const links = [
@@ -39,9 +39,9 @@ export function Nav() {
           >
             {theme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
           </button>
-          <Link href="/app" className="hidden sm:block">
-            <Button size="sm">Open app</Button>
-          </Link>
+          <ButtonLink href="/app" size="sm" className="hidden sm:inline-flex">
+            Open app
+          </ButtonLink>
           <button
             type="button"
             aria-label={open ? "Close menu" : "Open menu"}
@@ -69,9 +69,9 @@ export function Nav() {
                 </Link>
               ))}
               <div className="py-3">
-                <Link href="/app" onClick={() => setOpen(false)}>
-                  <Button block>Open app</Button>
-                </Link>
+                <ButtonLink href="/app" block onClick={() => setOpen(false)}>
+                  Open app
+                </ButtonLink>
               </div>
             </div>
           </motion.nav>

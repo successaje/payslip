@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, Building2, Eye, ShieldCheck, Users } from "lucide-react";
-import { Button } from "@/components/ui";
+import { Button, ButtonLink } from "@/components/ui";
 import { Mark } from "@/components/brand/Wordmark";
 import { Reveal } from "./Reveal";
 import { DemoPanel } from "./DemoPanel";
@@ -21,11 +21,9 @@ export function Hero() {
           a payment with no amount.
         </p>
         <div className="mt-8 flex flex-wrap gap-3">
-          <Link href="/app">
-            <Button size="lg" trailingIcon={<ArrowRight size={16} />}>
-              Send private payouts
-            </Button>
-          </Link>
+          <ButtonLink href="/app" size="lg" trailingIcon={<ArrowRight size={16} />}>
+            Send private payouts
+          </ButtonLink>
           <a href="#how">
             <Button size="lg" variant="secondary">
               See how it works
@@ -240,11 +238,9 @@ export function Closing() {
             Set up a workspace, invite someone, and send a private payout on devnet in under five minutes.
           </p>
         </div>
-        <Link href="/app">
-          <Button size="lg" trailingIcon={<ArrowRight size={16} />}>
-            Open Payslip
-          </Button>
-        </Link>
+        <ButtonLink href="/app" size="lg" trailingIcon={<ArrowRight size={16} />}>
+          Open Payslip
+        </ButtonLink>
       </div>
     </section>
   );

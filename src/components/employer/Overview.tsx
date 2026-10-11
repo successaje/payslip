@@ -6,7 +6,7 @@ import { motion } from "motion/react";
 import { ArrowRight, Check, Landmark, Receipt, Users } from "lucide-react";
 import type { ReactNode } from "react";
 import { useApp } from "@/components/app/AppContext";
-import { Amount, Badge, Button, Card, CardBody, CardHeader, PageHeader, Skeleton, SkeletonRows } from "@/components/ui";
+import { Amount, Badge, Button, ButtonLink, Card, CardBody, CardHeader, PageHeader, Skeleton, SkeletonRows } from "@/components/ui";
 import { useResource } from "@/hooks/useResource";
 import { api } from "@/lib/api/client";
 import type { Employee, PayrollRun } from "@/lib/db/schema";
@@ -113,9 +113,9 @@ export function Overview() {
         description="Private payouts on Solana. Amounts are encrypted on-chain."
         actions={
           allDone ? (
-            <Link href="/app/payroll">
-              <Button trailingIcon={<ArrowRight size={15} />}>New batch</Button>
-            </Link>
+            <ButtonLink href="/app/payroll" trailingIcon={<ArrowRight size={15} />}>
+              New batch
+            </ButtonLink>
           ) : undefined
         }
       />
@@ -201,11 +201,9 @@ export function Overview() {
               </span>{" "}
               Approve each one with an amount before they join a batch.
             </p>
-            <Link href="/app/people" className="shrink-0">
-              <Button size="sm" variant="secondary" trailingIcon={<ArrowRight size={14} />}>
-                Review requests
-              </Button>
-            </Link>
+            <ButtonLink href="/app/people" size="sm" variant="secondary" className="shrink-0" trailingIcon={<ArrowRight size={14} />}>
+              Review requests
+            </ButtonLink>
           </CardBody>
         </Card>
       )}
@@ -272,11 +270,11 @@ function ChecklistRow({ step, index, active }: { step: ChecklistStep; index: num
           <p className="mt-0.5 text-[13px] text-ink-3 text-pretty">{step.detail}</p>
         </div>
       </div>
-      <Link href={step.href} className="shrink-0 pl-11 sm:pl-0">
-        <Button size="sm" variant={active ? "primary" : "ghost"} trailingIcon={<ArrowRight size={13} />}>
+      <div className="shrink-0 pl-11 sm:pl-0">
+        <ButtonLink href={step.href} size="sm" variant={active ? "primary" : "ghost"} trailingIcon={<ArrowRight size={13} />}>
           {step.cta}
-        </Button>
-      </Link>
+        </ButtonLink>
+      </div>
     </motion.li>
   );
 }

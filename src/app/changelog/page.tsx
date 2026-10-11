@@ -8,6 +8,24 @@ export const metadata: Metadata = {
 
 const entries: { date: string; title: string; body: string; href?: string }[] = [
   {
+    date: "2026-10-08",
+    title: "Live on Vercel, brand kit, submission pack",
+    body: "The site is hosted with its own database path, the database connection opens on first use so builds succeed anywhere, and a brand route renders the logo, social cards and video cover from the product's own tokens and fonts.",
+    href: "https://github.com/successaje/payslip/pull/25",
+  },
+  {
+    date: "2026-10-06",
+    title: "A mainnet path that costs cents",
+    body: "A read-only preflight checks the chain, the programs, USDC and the deploy wallet before anything is spent. A command-line run creates a payout token with the auditor key, pays one recipient in a single Transaction V1 and reads the amount back as recipient and auditor, for about 0.01 SOL, no vault required. Rehearsed on devnet.",
+    href: "https://github.com/successaje/payslip/pull/24",
+  },
+  {
+    date: "2026-10-06",
+    title: "Demo re-recorded",
+    body: "Fifteen real devnet frames: the three views of a batch, the checklist, people, a batch settling in single transactions, the explorer view, the chain receipt, pay arriving, statements verified, books matching.",
+    href: "https://github.com/successaje/payslip/pull/22",
+  },
+  {
     date: "2026-10-06",
     title: "Import a roster from CSV",
     body: "Drop or paste a CSV with name, email, role and amount, in any column order, with or without a header. Every row is judged before anything is saved: bad amounts, missing names, repeats and people already on the roster are shown and skipped. Valid rows import in one request and you get the invite links to copy or download.",

@@ -107,8 +107,7 @@ Invariant: payroll token supply equals USDC vault balance.
 
 ## Developer wallet
 
-`src/lib/solana/devWallet.ts` registers a wallet-standard wallet backed by two
-keypairs in `localStorage`, only when `NEXT_PUBLIC_ENABLE_DEV_WALLET=true` and
+`src/lib/solana/devWallet.ts` registers a wallet-standard wallet backed by four generated keypairs in `localStorage`, only when `NEXT_PUBLIC_ENABLE_DEV_WALLET=true` and
 the cluster is devnet. It implements the same features a real wallet does
 (connect, disconnect, events, signMessage, signTransaction,
 signAndSendTransaction), so the app has one code path. It exists so the whole
