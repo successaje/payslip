@@ -141,6 +141,8 @@ invariant, and why the client is hand-written rather than IDL-generated.
 
 ## Deployment
 
+Live on devnet: <https://payslip-sol.vercel.app>.
+
 For the first real payout on mainnet, follow [docs/MAINNET.md](docs/MAINNET.md):
 costs, a read-only preflight (`npm run preflight:mainnet`), the program deploy,
 and the run itself. Every value-moving step is signed by a person.
