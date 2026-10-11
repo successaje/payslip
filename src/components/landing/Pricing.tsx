@@ -1,5 +1,5 @@
 import { ArrowRight, Check } from "lucide-react";
-import { Button, ButtonLink } from "@/components/ui";
+import { ButtonLink } from "@/components/ui";
 import { Reveal } from "./Reveal";
 
 const tiers = [

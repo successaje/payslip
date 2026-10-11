@@ -1,4 +1,4 @@
-import { Button, ButtonLink } from "@/components/ui";
+import { ButtonLink } from "@/components/ui";
 import { Mark } from "@/components/brand/Wordmark";
 
 export default function NotFound() {
