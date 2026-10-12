@@ -6,7 +6,8 @@ import { useSelectedWalletAccount } from "@solana/react";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowLeftRight, Check, ChevronDown, Copy, ExternalLink, LogOut } from "lucide-react";
 import { shortAddress } from "@/lib/format";
-import { explorerUrl } from "@/lib/solana/config";
+import { CLUSTER, explorerUrl } from "@/lib/solana/config";
+import { FaucetButton } from "./FaucetButton";
 import { cn } from "@/lib/cn";
 
 function DisconnectItem({ wallet, className, onBefore, onAfter }: { wallet: UiWallet; className: string; onBefore: () => Promise<void>; onAfter: () => void }) {
@@ -100,6 +101,7 @@ export function AccountMenu({ account, onSignOut }: { account: UiWalletAccount; 
               <ExternalLink size={15} className="text-ink-3" />
               View on explorer
             </a>
+            {CLUSTER === "devnet" && <FaucetButton variant="ghost" size="sm" block className="justify-start px-2.5" />}
             {wallet && wallet.accounts.length > 1 && (
               <>
                 <div className="my-1 h-px bg-line" />

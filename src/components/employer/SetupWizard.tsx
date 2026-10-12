@@ -14,7 +14,8 @@ import { auditorPublicKey, configureConfidentialAccount } from "@/lib/solana/con
 import { createCompanyMint } from "@/lib/solana/mint";
 import { findVaultAuthority, getInitVaultInstruction } from "@/lib/solana/vault";
 import { sendInstructions } from "@/lib/solana/send";
-import { VAULT_PROGRAM_ID } from "@/lib/solana/config";
+import { CLUSTER, VAULT_PROGRAM_ID } from "@/lib/solana/config";
+import { FaucetButton } from "@/components/wallet/FaucetButton";
 import { generateKeyPairSigner } from "@solana/kit";
 import { describeError } from "@/lib/errors";
 import { explorerUrl } from "@/lib/solana/config";
@@ -261,6 +262,7 @@ export function SetupWizard() {
                 <Button variant="secondary" size="lg" onClick={() => setPhase("details")}>
                   Back
                 </Button>
+                {CLUSTER === "devnet" && <FaucetButton className="mr-2">Get devnet SOL first</FaucetButton>}
                 <Button
                   size="lg"
                   className="flex-1"
