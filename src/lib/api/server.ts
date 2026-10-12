@@ -1,7 +1,7 @@
 import "server-only";
 import { and, eq } from "drizzle-orm";
 import { getSession } from "@/lib/auth/session";
-import { db } from "@/lib/db/client";
+import { db, ensureSchema } from "@/lib/db/client";
 import { companies, employees } from "@/lib/db/schema";
 
 export class ApiError extends Error {
@@ -20,6 +20,7 @@ export function json(data: unknown, init?: ResponseInit) {
 export function handle(fn: (req: Request, ctx: { params: Promise<Record<string, string>> }) => Promise<Response>) {
   return async (req: Request, ctx: { params: Promise<Record<string, string>> }) => {
     try {
+      await ensureSchema();
       return await fn(req, ctx);
     } catch (e) {
       if (e instanceof ApiError) return json({ error: e.message }, { status: e.status });
