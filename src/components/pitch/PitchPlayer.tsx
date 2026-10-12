@@ -240,6 +240,7 @@ function Me() {
       <h2 className="mt-[1.5vh] text-[4.2vw] tracking-[-0.02em]" style={serif}>
         Success Aje
       </h2>
+      <p className="mt-[0.4vh] font-mono text-[1.1vw] uppercase tracking-[0.12em] text-[#85817a]">Lagos, Nigeria</p>
       <motion.p {...rise(0.6)} className="mt-[1vh] text-[1.6vw] text-[#4d4a44]">
         Solo. Built inside the hackathon window. Every transaction in the demo is real.
       </motion.p>
