@@ -84,19 +84,27 @@ function Authenticated({ account, signOut, children }: { account: UiWalletAccoun
 
   const me = state.status === "ready" ? state.me : null;
   const company = me?.companies[0] ?? null;
-  const isEmployer = Boolean(company);
+  // A company row without a mint means setup was interrupted (no SOL, a cancelled
+  // signature, a closed tab). It is not a workspace yet; send the owner back to finish.
+  const isEmployer = Boolean(company?.mint);
+  const setupInterrupted = Boolean(company && !company.mint);
   const isEmployee = (me?.memberships.length ?? 0) > 0;
   const isAuditor = (me?.audits.length ?? 0) > 0;
   const hasRequest = (me?.requests.length ?? 0) > 0;
-  const needsSetup = me !== null && !isEmployer && !isEmployee && !isAuditor && !hasRequest;
+  const needsSetup = me !== null && (setupInterrupted || (!isEmployer && !isEmployee && !isAuditor && !hasRequest));
   const onSetup = pathname.startsWith("/app/setup");
   const onEmployeeArea = pathname.startsWith("/app/me");
   const onAuditArea = pathname.startsWith("/app/audit");
 
   useEffect(() => {
     if (!me) return;
-    if (needsSetup && !onSetup) router.replace("/app/setup");
-    else if (!needsSetup && onSetup) router.replace(isEmployer ? "/app" : isEmployee ? "/app/me" : "/app/audit");
+    if (needsSetup) {
+      // Setup wins over every other role until it is finished, so an owner who is
+      // also an auditor or recipient elsewhere is never bounced between pages.
+      if (!onSetup) router.replace("/app/setup");
+      return;
+    }
+    if (onSetup) router.replace(isEmployer ? "/app" : isEmployee ? "/app/me" : "/app/audit");
     else if (!isEmployer && (isEmployee || hasRequest) && !onEmployeeArea && !(isAuditor && onAuditArea)) router.replace("/app/me");
     else if (!isEmployer && !isEmployee && isAuditor && !onAuditArea) router.replace("/app/audit");
   }, [me, needsSetup, onSetup, isEmployer, isEmployee, isAuditor, hasRequest, onEmployeeArea, onAuditArea, router]);
