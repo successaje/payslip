@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import { address as toAddress } from "@solana/kit";
@@ -32,16 +32,21 @@ const slide = {
 };
 
 export function SetupWizard() {
-  const { account, signer, client, refresh, signOut } = useApp();
+  const { account, signer, client, refresh, signOut, me } = useApp();
   const router = useRouter();
   const { toast } = useToast();
 
+  // A company saved by an earlier attempt that never got its mint. Resume it
+  // rather than creating another; the retry button below reuses it too.
+  const unfinished = me.companies.find((c) => !c.mint) ?? null;
+  const createdRef = useRef<{ id: string } | null>(unfinished);
+
   const [phase, setPhase] = useState<Phase>("details");
-  const [name, setName] = useState("");
+  const [name, setName] = useState(unfinished?.name ?? "");
   const [nameError, setNameError] = useState<string | null>(null);
 
-  const [auditorMode, setAuditorMode] = useState<"self" | "other">("self");
-  const [auditorAddress, setAuditorAddress] = useState("");
+  const [auditorMode, setAuditorMode] = useState<"self" | "other">(unfinished && unfinished.auditorAddress !== account.address ? "other" : "self");
+  const [auditorAddress, setAuditorAddress] = useState(unfinished && unfinished.auditorAddress !== account.address ? unfinished.auditorAddress : "");
   const [auditorKey, setAuditorKey] = useState("");
   const [auditorError, setAuditorError] = useState<string | null>(null);
 
@@ -67,11 +72,14 @@ export function SetupWizard() {
     ]);
 
     try {
-      const company = await api.createCompany({
-        name,
-        auditorAddress: auditorMode === "self" ? account.address : auditorAddress,
-      });
-      setStep("company", "done");
+      const company =
+        createdRef.current ??
+        (await api.createCompany({
+          name,
+          auditorAddress: auditorMode === "self" ? account.address : auditorAddress,
+        }));
+      createdRef.current = company;
+      setStep("company", "done", createdRef.current === unfinished ? "Resumed from your earlier attempt" : undefined);
 
       setStep("auditor", "active");
       let auditorElgamalPubkey: string;

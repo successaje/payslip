@@ -49,6 +49,24 @@ export function Overview() {
   }, [company?.id, mint, account.address, client]);
 
   if (!company) return null;
+  if (!company.mint) {
+    return (
+      <>
+        <PageHeader title={company.name} description="Private payouts on Solana. Amounts are encrypted on-chain." />
+        <Card>
+          <CardBody className="pt-5">
+            <p className="text-[15px] font-semibold text-ink">Finish setting up</p>
+            <p className="mt-1 text-[13.5px] text-ink-3 text-pretty">
+              The workspace was saved but its payout token was not created yet. Pick up where you left off; nothing is lost.
+            </p>
+            <ButtonLink href="/app/setup" className="mt-4" trailingIcon={<ArrowRight size={15} />}>
+              Continue setup
+            </ButtonLink>
+          </CardBody>
+        </Card>
+      </>
+    );
+  }
 
   const s = snapshot.data;
   const ready = s?.people.filter((p) => p.status === "active") ?? [];
