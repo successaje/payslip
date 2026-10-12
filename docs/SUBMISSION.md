@@ -70,7 +70,7 @@ https://payslip-sol.vercel.app (devnet; the built-in developer wallet lets a jud
 Success Aje, founder and engineer. **[you: two sentences. Where you are based, what you have shipped before, and the one line that makes this problem yours, for example being paid in stablecoins yourself or having run payouts for a community.]** Solo for the hackathon; every line of Payslip, the vault program and the single-transaction confidential transfer was built inside the window, 3 to 12 October 2026.
 
 **Team location**
-**[you: city, country]**
+Lagos, Nigeria
 
 **Go-to-market**
 Wedge: bounty boards, grant programs and DAOs on Solana that publish every amount today. Superteam Earn alone has paid $10.3M in public bounties. They already have the payer, the recipients and the USDC; they lack only privacy, and the public claim link means a program onboards recipients without a roster. Second segment: stablecoin-paid agencies and distributed teams in Nigeria, India, Brazil and Vietnam, where Rise reports more than half of contractor withdrawals in stablecoins and salaries are sensitive. Distribution is built into the product: every payer onboards every recipient, and every recipient carries the expectation to their next client. Pricing: free on devnet, a flat fee per recipient per batch on mainnet, never a cut of the money.
@@ -120,7 +120,7 @@ A flat fee per recipient per batch, paid in USDC at send time. Never a cut of an
 Just me. I spent the back half of September reading everything about what Solana had quietly shipped and unused, and chose this. I built Payslip from 3 October to the deadline, full time, most days until the devnet RPC rate-limited me to bed. [What you did before this, and whether you go full time after.]
 
 **Where is the team based? (≤500)**
-[City, country], solo and remote. With funding I hire one engineer and one person who has sold to DAO treasurers before, remote first, and we do the accelerator's two weeks in San Francisco in person. I am not relocating the company for its own sake; the customers are everywhere USDC is.
+Lagos, Nigeria, solo and remote. With funding I hire one engineer and one person who has sold to DAO treasurers before, remote first, and we do the accelerator's two weeks in San Francisco in person. I am not relocating the company for its own sake; the customers are everywhere USDC is.
 
 Legal entity: No. Investment: No. Fundraising: Yes. Live token: No, and there will not be one.
 
@@ -128,7 +128,7 @@ Legal entity: No. Investment: No. Fundraising: Yes. Live token: No, and there wi
 
 Face to camera, one take. 1:50.
 
-0:00 "Hi, I'm Success Aje, [where you are]. I'm building Payslip."
+0:00 "Hi, I'm Success Aje, from Lagos. I'm building Payslip."
 
 0:06 What it is. "Payslip is private payouts on Solana. A team, a DAO or a grant program pays people in USDC in one batch, and the amounts never show up on the public ledger. The person you paid can read their own number. The auditor you chose can read every number and can't move a cent. Everyone else sees a payment with no amount on it."
 
