@@ -95,6 +95,9 @@ export const api = {
 
   audit: (companyId: string) => request<AuditData>(`/api/companies/${companyId}/audit`),
 
+  /** Devnet only: a little SOL and test USDC for the signed-in wallet. */
+  devnetFaucet: () => request<{ granted: { sol: string; usdc: string }; signature: string | null; note?: string }>("/api/devnet/faucet", { method: "POST" }),
+
   myPayslips: () =>
     request<{ company: { id: string; name: string; mint: string | null }; employee: Employee; payments: (Payment & { period: string })[] }[]>(
       "/api/me/payslips",

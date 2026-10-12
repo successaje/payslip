@@ -12,6 +12,7 @@ import { applyPending, configureConfidentialAccount, decryptAvailableBalance, de
 import { sendInstructions } from "@/lib/solana/send";
 import { CLUSTER, VAULT_PROGRAM_ID } from "@/lib/solana/config";
 import { VaultCard } from "./VaultCard";
+import { FaucetButton } from "@/components/wallet/FaucetButton";
 import { parseUsd } from "@/lib/domain/money";
 import { describeError } from "@/lib/errors";
 
@@ -172,6 +173,13 @@ export function Treasury() {
       {VAULT_PROGRAM_ID && holder?.configured && (
         <div className="mt-4">
           <VaultCard client={client} signer={signer} mint={mint} publicPayroll={holder.publicAmount} onChanged={refresh} mode="employer" />
+        </div>
+      )}
+
+      {CLUSTER === "devnet" && (
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-[var(--radius-md)] border border-dashed border-line-strong px-4 py-3">
+          <p className="text-[13px] text-ink-3">Devnet: need SOL for fees or test USDC to wrap?</p>
+          <FaucetButton size="sm" onFunded={() => void refresh()} />
         </div>
       )}
 
