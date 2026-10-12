@@ -124,66 +124,34 @@ Just me. I spent the back half of September reading everything about what Solana
 
 Legal entity: No. Investment: No. Fundraising: Yes. Live token: No, and there will not be one.
 
-## Pitch video script (2:30, face to camera or voice over slides)
+## Pitch video (up to 2 minutes; introduce yourself, what you are building, why you)
 
-Record in one take if you can. Loom is fine. Cover slide:
-`brand/social/cover.png`.
+Face to camera, one take. 1:50.
 
-0:00 **Hook (15 s).** "If your team is paid in USDC, everyone on earth can
-read every salary. Not your bank, not your competitor: everyone. Payslip is
-the only payout tool where the amounts are not public."
+0:00 "Hi, I'm Success Aje, [where you are]. I'm building Payslip."
 
-0:15 **Who I am (20 s).** **[you]** Name, where you are, what you have built
-before, why this problem is yours.
+0:06 What it is. "Payslip is private payouts on Solana. A team, a DAO or a grant program pays people in USDC in one batch, and the amounts never show up on the public ledger. The person you paid can read their own number. The auditor you chose can read every number and can't move a cent. Everyone else sees a payment with no amount on it."
 
-0:35 **Problem (25 s).** DAOs, grant programs and crypto-native teams pay in
-USDC because it is instant and global. Every amount is on a public ledger
-forever. Bounty boards publish every prize; grantees compare tranches;
-competitors read headcount cost. Deel cannot fix it. The leak is the chain.
+0:30 Why it matters. "Teams already pay in USDC because it's instant and global. The cost is that every salary, every grant, every bounty is public forever. I watched a friend's bounty get compared against a teammate's within an hour of the link going up. Nobody meant harm. The chain just does that, and no payroll app can fix it, because the leak is the chain."
 
-1:00 **Insight (25 s).** Solana shipped confidential balances in June. Almost
-nobody uses them: we saw four transactions in four days. Wallets have not
-integrated it. Payroll owns both ends of the transfer, so it does not need
-the wallets. That is why this product, and why now.
+0:55 Why now. "Solana shipped confidential balances in June and almost nobody used them; I counted four transactions in four days, because wallets never integrated it. Payroll owns both ends of a transfer, so it doesn't need the wallets. In September Transaction V1 made a private transfer fit in one transaction instead of five. Payslip is the first product I know of that does that."
 
-1:25 **Product (35 s).** Show the landing demo panel: one batch, three views.
-Recipient sees their number. Auditor sees every number. Everyone else sees
-six dots. Say: each payout is one transaction with three zero-knowledge
-proofs inside, under a second. Recipients self-register through a link, see
-pay the moment it lands, and verify every statement against the chain. The
-auditor reads everything and spends nothing.
+1:20 Why me. "[Two honest sentences: what you have shipped before, and the thing that makes this problem yours.] I built the whole thing inside the hackathon window, by myself, and every transaction in the demo is real."
 
-2:00 **Market and go-to-market (20 s).** 888,000 daily active stablecoin
-addresses; $10.3M of public bounties on Superteam Earn alone; Rise reports
-over half of contractor withdrawals in stablecoins. Wedge: bounty and grant
-programs that already have payer, recipients and USDC. Each payer onboards
-every recipient.
+1:40 Close. "The pitch is one sentence: the only payout tool where the amounts are not public. Next is a first mainnet pilot with a grant program. Thanks."
 
-2:20 **Ask and vision (10 s).** Mainnet next, then the SDK every payout
-product can compose with. Pilots with two programs are the ask.
+## Demo video (up to 3 minutes; the live product, no slides, no code)
 
-## Demo video script (≤3:00, screen recording)
+Screen recording of https://payslip-sol.vercel.app in a fresh browser window so the dev wallet starts empty. 2:50.
 
-Follow `docs/media/demo.gif` beat for beat, narrated. Cover slide, then:
-
-0:00 Landing, demo panel: Ada, Anyone, Auditor. "Three views of the same
-batch."
-0:20 Overview, People: salaries, a bounty, a grant; two imported from CSV;
-the public link. "Nobody is paid until they connect a wallet and register a
-confidential account: one signature, one transaction."
-0:50 Treasury: wrap USDC through the vault, move to private. "The vault has
-no admin. Supply equals USDC held."
-1:10 New batch, Send payouts. Rows go from Generating proofs to Paid.
-"Proofs are built in the browser. Each payout is one Transaction V1: equality
-proof, validity proof, range proof, transfer. 2.4 kilobytes, 240k compute
-units, one second."
-1:40 What the explorer sees, then the chain receipt. "This is all anyone else
-gets."
-2:00 Ada's home: Pay arrived, confirm, balance. Statements: Verified on-chain.
-"She decrypts the recipient handle of the proof with her own key."
-2:25 Audit: Decrypt all, books match, export CSV.
-2:45 Architecture card (one slide): per-company mint with auditor key, vault
-program, proofs in browser, server holds names and invite links only.
+0:00 Landing. Click the demo panel: Anyone, Ada, Auditor. "Three views of the same batch. Ada sees her number, the auditor sees every number, the public sees dots."
+0:20 Open app, connect the dev wallet, sign in. Account menu, Get devnet test funds. "A little SOL and test USDC so you can follow along."
+0:40 Setup: name the workspace, keep Me for now as auditor, Create payout token. "One transaction creates a Token-2022 mint with the confidential extension and the auditor key baked in. The vault that backs it with USDC has no admin."
+1:05 People: Add person, copy the invite link. Switch to the second dev account, open the link, register. Switch back. "One signature, one transaction."
+1:35 Treasury: Wrap, Move to private. "USDC in, payout token out, one to one."
+1:55 Payouts: New batch, Send payouts. "Each payout is one transaction with three zero-knowledge proofs inside." What the explorer sees. The receipt. "No amount anywhere."
+2:25 Recipient: Pay arrived, Confirm receipt, balance. Statements, Verify: Verified on-chain.
+2:40 Audit: Decrypt all transfers. "Books match the chain." End there.
 
 ## Checklist for submission day
 
