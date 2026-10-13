@@ -5,6 +5,7 @@ import { useSignMessage } from "@solana/react";
 import type { UiWalletAccount } from "@wallet-standard/react";
 import { getBase64Decoder } from "@solana/kit";
 import { buildSignInMessage } from "@/lib/auth/siws";
+import { endSession, SESSION_ENDED } from "@/lib/auth/clientSession";
 
 export type SessionState =
   | { status: "loading" }
@@ -26,13 +27,18 @@ export function useSession() {
     fetchSession().then((s) => {
       if (!cancelled) setState(s);
     });
+    // Disconnecting from any wallet menu ends the session; reflect it here even
+    // when this hook did not initiate it (e.g. the menu on an invite page).
+    const onEnded = () => setState({ status: "anonymous" });
+    window.addEventListener(SESSION_ENDED, onEnded);
     return () => {
       cancelled = true;
+      window.removeEventListener(SESSION_ENDED, onEnded);
     };
   }, []);
 
   const signOut = useCallback(async () => {
-    await fetch("/api/auth/session", { method: "DELETE" });
+    await endSession();
     setState({ status: "anonymous" });
   }, []);
 
