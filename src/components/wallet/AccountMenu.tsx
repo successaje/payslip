@@ -9,6 +9,7 @@ import { shortAddress } from "@/lib/format";
 import { CLUSTER, explorerUrl } from "@/lib/solana/config";
 import { FaucetButton } from "./FaucetButton";
 import { cn } from "@/lib/cn";
+import { endSession } from "@/lib/auth/clientSession";
 
 function DisconnectItem({ wallet, className, onBefore, onAfter }: { wallet: UiWallet; className: string; onBefore: () => Promise<void>; onAfter: () => void }) {
   const [, disconnect] = useDisconnect(wallet);
@@ -116,7 +117,7 @@ export function AccountMenu({ account, onSignOut }: { account: UiWalletAccount; 
                       className={item}
                       onClick={async () => {
                         setOpen(false);
-                        await onSignOut?.();
+                        await (onSignOut ?? endSession)();
                         setSelected(a);
                       }}
                     >
@@ -136,7 +137,7 @@ export function AccountMenu({ account, onSignOut }: { account: UiWalletAccount; 
                 className={item}
                 onBefore={async () => {
                   setOpen(false);
-                  await onSignOut?.();
+                  await (onSignOut ?? endSession)();
                 }}
                 onAfter={() => setSelected(undefined)}
               />
@@ -147,7 +148,7 @@ export function AccountMenu({ account, onSignOut }: { account: UiWalletAccount; 
                 className={item}
                 onClick={async () => {
                   setOpen(false);
-                  await onSignOut?.();
+                  await (onSignOut ?? endSession)();
                   setSelected(undefined);
                 }}
               >
